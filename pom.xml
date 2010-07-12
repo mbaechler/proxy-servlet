@@ -3,10 +3,24 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.woonoz</groupId>
+	<groupId>com.googlecode.gwt-proxy-servlet</groupId>
 	<artifactId>proxy</artifactId>
+	<packaging>jar</packaging>
 	<name>gwt-proxy-servlet</name>
-	<version>1.0</version>
+	<version>1.0.1</version>
+	<description>Make your GWT client to access another domain's services</description>
+	<url>http://gwt-proxy-servlet.googlecode.com/</url>
+	<licenses>
+	  <license>
+	    <name>The Apache Software License, Version 2.0</name>
+	    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	    <distribution>repo</distribution>
+	  </license>
+	</licenses>
+	<scm>
+	  <url>http://gwt-proxy-servlet.googlecode.com/svn/trunk/</url>
+	</scm>
+
 
 	<properties>
 		<maven.compiler.source>1.5</maven.compiler.source>
