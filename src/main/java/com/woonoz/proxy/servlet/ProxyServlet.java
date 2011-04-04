@@ -64,6 +64,8 @@ public class ProxyServlet extends HttpServlet {
 		client.removeRequestInterceptorByClass(RequestAddCookies.class);
 	}
 	
+	
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		new HttpGetRequestHandler(request, response, targetServer, client).execute();

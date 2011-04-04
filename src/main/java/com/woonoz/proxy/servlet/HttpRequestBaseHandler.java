@@ -20,24 +20,28 @@
  */
 package com.woonoz.proxy.servlet;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 
-public class HttpGetRequestHandler extends HttpRequestBaseHandler {
+public abstract class HttpRequestBaseHandler extends HttpRequestHandler {
 
-	public HttpGetRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
+	public HttpRequestBaseHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
 		super(request, response, targetServer, client);
 	}
+	
+	protected abstract HttpRequestBase createHttpRequestBase(URI targetUri);
 
 	@Override
-	protected HttpRequestBase createHttpRequestBase(URI targetUri) {
-		return new HttpGet(targetUri);
-	}
-}
+	protected HttpRequestBase createHttpCommand(final URI targetUri, ClientHeadersHandler clientHeadersHandler) throws URISyntaxException, InvalidCookieException, MalformedURLException {
+		HttpRequestBase httpRequestBase = createHttpRequestBase(targetUri);
+		copyHeaders(getRequest(), httpRequestBase, clientHeadersHandler);
+		return httpRequestBase;
+	}}
