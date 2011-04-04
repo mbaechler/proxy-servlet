@@ -33,15 +33,20 @@ import org.apache.http.client.methods.HttpRequestBase;
 
 public abstract class HttpRequestBaseHandler extends HttpRequestHandler {
 
-	public HttpRequestBaseHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
+	public HttpRequestBaseHandler(HttpServletRequest request,
+			HttpServletResponse response, URL targetServer, HttpClient client) {
 		super(request, response, targetServer, client);
 	}
-	
+
 	protected abstract HttpRequestBase createHttpRequestBase(URI targetUri);
 
 	@Override
-	protected HttpRequestBase createHttpCommand(final URI targetUri, ClientHeadersHandler clientHeadersHandler) throws URISyntaxException, InvalidCookieException, MalformedURLException {
+	protected HttpRequestBase createHttpCommand(final URI targetUri,
+			ClientHeadersHandler clientHeadersHandler)
+			throws URISyntaxException, InvalidCookieException,
+			MalformedURLException {
 		HttpRequestBase httpRequestBase = createHttpRequestBase(targetUri);
 		copyHeaders(getRequest(), httpRequestBase, clientHeadersHandler);
 		return httpRequestBase;
-	}}
+	}
+}
