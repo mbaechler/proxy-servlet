@@ -7,7 +7,7 @@
 	<artifactId>proxy</artifactId>
 	<packaging>jar</packaging>
 	<name>gwt-proxy-servlet</name>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<description>Make your GWT client to access another domain's services</description>
 	<url>http://gwt-proxy-servlet.googlecode.com/</url>
 	<licenses>
