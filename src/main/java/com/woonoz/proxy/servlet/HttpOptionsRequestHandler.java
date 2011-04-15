@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpRequestBase;
 
 public class HttpOptionsRequestHandler extends HttpRequestBaseHandler {
@@ -38,6 +39,6 @@ public class HttpOptionsRequestHandler extends HttpRequestBaseHandler {
 
 	@Override
 	protected HttpRequestBase createHttpRequestBase(URI targetUri) {
-		return new HttpGet(targetUri);
+		return new HttpOptions(targetUri);
 	}
 }
