@@ -40,6 +40,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
+@SuppressWarnings("serial")
 public class ProxyServlet extends HttpServlet {
 
 	private static final int HTTP_DEFAULT_PORT = 80;
