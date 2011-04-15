@@ -80,9 +80,12 @@ public class ProxyServlet extends HttpServlet {
 		new HttpHeadRequestHandler(request, response, targetServer, client).execute();
 	}
 	
+	@Override
+	protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		new HttpGetRequestHandler(request, response, targetServer, client).execute();
+	}
 	
 	
-
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		new HttpPostRequestHandler(request, response, targetServer, client).execute();
