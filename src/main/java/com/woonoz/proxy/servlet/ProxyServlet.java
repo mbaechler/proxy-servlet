@@ -85,6 +85,10 @@ public class ProxyServlet extends HttpServlet {
 		new HttpOptionsRequestHandler(request, response, targetServer, client).execute();
 	}
 	
+	@Override
+	protected void doTrace(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		new HttpTraceRequestHandler(request, response, targetServer, client).execute();
+	}
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
