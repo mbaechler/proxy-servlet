@@ -65,11 +65,16 @@ public class ProxyServlet extends HttpServlet {
 	}
 	
 	
-	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		new HttpGetRequestHandler(request, response, targetServer, client).execute();
 	}
+	
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		new HttpDeleteRequestHandler(request, response, targetServer, client).execute();
+	}
+	
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
