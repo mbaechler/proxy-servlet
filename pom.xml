@@ -6,10 +6,10 @@
 	<groupId>com.googlecode.gwt-proxy-servlet</groupId>
 	<artifactId>proxy</artifactId>
 	<packaging>jar</packaging>
-	<name>gwt-proxy-servlet</name>
+	<name>proxy-servlet</name>
 	<version>1.0.2-SNAPSHOT</version>
 	<description>Make your GWT client to access another domain's services</description>
-	<url>http://gwt-proxy-servlet.googlecode.com/</url>
+	<url>https://github.com/mbaechler/proxy-servlet</url>
 	<licenses>
 	  <license>
 	    <name>The Apache Software License, Version 2.0</name>
@@ -18,7 +18,7 @@
 	  </license>
 	</licenses>
 	<scm>
-	  <url>http://gwt-proxy-servlet.googlecode.com/svn/trunk/</url>
+	  <url>https://github.com/mbaechler/proxy-servlet.git/</url>
 	</scm>
 
 
