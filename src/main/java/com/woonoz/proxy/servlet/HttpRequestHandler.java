@@ -38,6 +38,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.util.EntityUtils;
 
 public abstract class HttpRequestHandler {
 
@@ -138,7 +139,7 @@ public abstract class HttpRequestHandler {
 			try {
 				entity.writeTo(responseToClient.getOutputStream());
 			} finally {
-				entity.consumeContent();
+				EntityUtils.consume(entity);
 			}
 		}
 	}

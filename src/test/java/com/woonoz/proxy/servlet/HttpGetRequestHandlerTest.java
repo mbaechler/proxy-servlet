@@ -17,18 +17,19 @@ public class HttpGetRequestHandlerTest {
 	@Test @Ignore
 	public void testGet() throws IOException {
 		URL targetServer = new URL("http://www.google.com/");
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		HttpServletResponse response = (HttpServletResponse)EasyMock.createControl().createMock(HttpServletResponse.class); 
+		HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+		HttpServletResponse response = EasyMock.createControl().createMock(HttpServletResponse.class); 
 		HttpClient client = EasyMock.createMock(HttpClient.class);
-		
 		ServletOutputStream servletOutputStream = EasyMock.createMock(ServletOutputStream.class);
-		EasyMock.expect(response.getOutputStream()).andReturn(servletOutputStream);
-
-		HttpGetRequestHandler httpGetRequestHandler = new HttpGetRequestHandler(
-				request, response, targetServer, client);
+		EasyMock.expect(response.getOutputStream()).andReturn(servletOutputStream).anyTimes();
+		EasyMock.replay(response);
+		
+		HttpGetRequestHandler httpGetRequestHandler = 
+			new HttpGetRequestHandler(request, response, targetServer, client);
 		
 		httpGetRequestHandler.execute();
+		
+		EasyMock.verify(response);
 	}
 
 }

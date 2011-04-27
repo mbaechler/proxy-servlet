@@ -20,8 +20,6 @@
  */
 package com.woonoz.proxy.servlet;
 
-import static org.junit.Assert.*;
-
 import javax.servlet.http.Cookie;
 
 import org.apache.http.impl.cookie.BasicClientCookie;
@@ -69,27 +67,19 @@ public class CookieFormatterTest {
 		Assert.assertEquals("JSESSIONID=; path=/;", formatter.asString());	
 	}
 
-	@Test
+	@Test(expected=InvalidCookieException.class)
 	public void testCookieNullValue() throws InvalidCookieException {
 		Cookie cookie = new Cookie("JSESSIONID", null);
 		cookie.setPath("/");
-		try {
-			CookieFormatter.createFromServletCookie(cookie);
-			fail(InvalidCookieException.class + " expected");
-		} catch (InvalidCookieException e) {
-		}
+		CookieFormatter.createFromServletCookie(cookie);
 	}
 
 	
-	@Test
+	@Test(expected=InvalidCookieException.class)
 	public void testCookieNoName() throws InvalidCookieException {
 		String sessionId = "JJJ2234312421";
 		Cookie cookie = new Cookie("", sessionId);
-		try {
-			CookieFormatter.createFromServletCookie(cookie);
-			fail(InvalidCookieException.class + " expected");
-		} catch (InvalidCookieException e) {
-		}
+		CookieFormatter.createFromServletCookie(cookie);
 	}
 
 	

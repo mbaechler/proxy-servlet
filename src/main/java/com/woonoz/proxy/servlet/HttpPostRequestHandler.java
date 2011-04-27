@@ -66,19 +66,19 @@ public class HttpPostRequestHandler extends HttpRequestHandler {
 	}
 	
 	private void copyData(HttpServletRequest request, HttpPost httpPost) throws FileUploadException, IOException {
-		HttpEntity entity = createHttpEntity(request, httpPost);
+		HttpEntity entity = createHttpEntity(request);
 		httpPost.setEntity(entity);
 	}
 
-	private HttpEntity createHttpEntity(HttpServletRequest request, HttpPost httpPost) throws FileUploadException, IOException {
+	private HttpEntity createHttpEntity(HttpServletRequest request) throws FileUploadException, IOException {
 		if (ServletFileUpload.isMultipartContent(request)) {
-			return createMultipartEntity(request, httpPost);
+			return createMultipartEntity(request);
 		} else {
 			return new BufferedHttpEntity(new InputStreamEntity(request.getInputStream(), request.getContentLength()));
 		}
 	}
 
-	private HttpEntity createMultipartEntity(HttpServletRequest request, HttpPost httpPost) throws FileUploadException, IOException {
+	private HttpEntity createMultipartEntity(HttpServletRequest request) throws FileUploadException, IOException {
 		DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
 		ServletFileUpload servletFileUpload = new ServletFileUpload(diskFileItemFactory);
 		MultipartEntity multipartEntity = new MultipartEntity();

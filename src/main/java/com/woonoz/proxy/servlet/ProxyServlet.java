@@ -30,17 +30,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.client.protocol.RequestAddCookies;
 import org.apache.http.client.protocol.ResponseProcessCookies;
-import org.apache.http.conn.params.ConnManagerPNames;
-import org.apache.http.conn.params.ConnPerRouteBean;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 
-@SuppressWarnings("serial")
 public class ProxyServlet extends HttpServlet {
 
 	private static final int HTTP_DEFAULT_PORT = 80;
@@ -54,12 +50,11 @@ public class ProxyServlet extends HttpServlet {
 	public void init(final URL targetServer, int maxCnx) {
 		this.targetServer = targetServer;
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		schemeRegistry.register(new Scheme(targetServer.getProtocol(), PlainSocketFactory.getSocketFactory(), getPortOrDefault(targetServer.getPort())));
+		schemeRegistry.register(new Scheme(targetServer.getProtocol(), getPortOrDefault(targetServer.getPort()), PlainSocketFactory.getSocketFactory()));
 		BasicHttpParams httpParams = new BasicHttpParams();
-		HttpParams connManagerParams = new BasicHttpParams();
-		connManagerParams.setParameter(ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE, new ConnPerRouteBean(maxCnx));
-		connManagerParams.setParameter(ConnManagerPNames.MAX_TOTAL_CONNECTIONS, maxCnx);
-		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(connManagerParams, schemeRegistry);
+		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(schemeRegistry);
+		cm.setDefaultMaxPerRoute(maxCnx);
+		cm.setMaxTotal(maxCnx);
 		client = new DefaultHttpClient(cm, httpParams);
 		client.removeResponseInterceptorByClass(ResponseProcessCookies.class);
 		client.removeRequestInterceptorByClass(RequestAddCookies.class);

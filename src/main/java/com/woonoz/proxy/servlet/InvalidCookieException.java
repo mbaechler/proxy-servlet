@@ -20,10 +20,10 @@
  */
 package com.woonoz.proxy.servlet;
 
-@SuppressWarnings("serial")
 public class InvalidCookieException extends RuntimeException {
 
 	public InvalidCookieException() {
+		super();
 	}
 
 	public InvalidCookieException(String message) {
