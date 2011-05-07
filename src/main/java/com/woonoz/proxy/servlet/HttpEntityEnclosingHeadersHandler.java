@@ -23,9 +23,9 @@ package com.woonoz.proxy.servlet;
 import java.net.URISyntaxException;
 
 
-class PostClientHeadersHandler extends ClientHeadersHandler {
+class HttpEntityEnclosingHeadersHandler extends ClientHeadersHandler {
 
-	public PostClientHeadersHandler(UrlRewriter urlRewriter) {
+	public HttpEntityEnclosingHeadersHandler(UrlRewriter urlRewriter) {
 		super(urlRewriter, HeaderToSubstitute.values());
 	}
 	
