@@ -45,9 +45,9 @@ import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
 
-public abstract class HttpEntityEnclosingRequestBaseRequestHandler extends HttpRequestHandler {
+public abstract class HttpEntityEnclosingRequestBaseHandler extends HttpRequestHandler {
 
-	public HttpEntityEnclosingRequestBaseRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
+	public HttpEntityEnclosingRequestBaseHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
 		super(request, response, targetServer, client);
 	}
 	

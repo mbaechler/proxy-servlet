@@ -30,7 +30,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
 
-public class HttpPostRequestHandler extends HttpEntityEnclosingRequestBaseRequestHandler {
+public class HttpPostRequestHandler extends HttpEntityEnclosingRequestBaseHandler {
 
 	public HttpPostRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
 		super(request, response, targetServer, client);
