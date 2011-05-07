@@ -30,7 +30,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpRequestBase;
 
-public class HttpOptionsRequestHandler extends HttpRequestBaseHandler {
+public class HttpOptionsRequestHandler extends HttpRequestHandler {
 
 	public HttpOptionsRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
 		super(request, response, targetServer, client);

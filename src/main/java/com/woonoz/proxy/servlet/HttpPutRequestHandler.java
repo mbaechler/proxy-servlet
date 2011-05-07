@@ -30,7 +30,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPut;
 
-public class HttpPutRequestHandler extends HttpEntityEnclosingRequestBaseHandler {
+public class HttpPutRequestHandler extends HttpEntityEnclosingRequestHandler {
 
 	public HttpPutRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
 		super(request, response, targetServer, client);

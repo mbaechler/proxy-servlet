@@ -55,9 +55,16 @@ public abstract class HttpRequestHandler {
 		this.client = client;
 	}
 	
-	protected abstract HttpRequestBase createHttpCommand(URI targetUri, ClientHeadersHandler clientHeadersHandler)
-		throws InvalidCookieException, URISyntaxException, FileUploadException, IOException;
+	protected abstract HttpRequestBase createHttpRequestBase(URI targetUri);
 	
+	protected HttpRequestBase createHttpCommand(final URI targetUri,
+			ClientHeadersHandler clientHeadersHandler)
+			throws URISyntaxException, InvalidCookieException,
+			MalformedURLException, FileUploadException, IOException {
+		HttpRequestBase httpRequestBase = createHttpRequestBase(targetUri);
+		copyHeaders(getRequest(), httpRequestBase, clientHeadersHandler);
+		return httpRequestBase;
+	}
 	protected ClientHeadersHandler createClientHeadersHandler(final UrlRewriter urlRewriter) {
 		return new ClientHeadersHandler(urlRewriter);
 	}

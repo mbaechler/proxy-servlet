@@ -30,7 +30,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 
-public class HttpHeadRequestHandler extends HttpRequestBaseHandler {
+public class HttpHeadRequestHandler extends HttpRequestHandler {
 
 	public HttpHeadRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
 		super(request, response, targetServer, client);

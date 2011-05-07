@@ -30,7 +30,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpTrace;
 
-public class HttpTraceRequestHandler extends HttpRequestBaseHandler {
+public class HttpTraceRequestHandler extends HttpRequestHandler {
 
 	public HttpTraceRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
 		super(request, response, targetServer, client);
