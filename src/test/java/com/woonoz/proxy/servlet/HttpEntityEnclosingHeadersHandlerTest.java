@@ -31,7 +31,7 @@ import com.woonoz.proxy.servlet.AbstractHeadersHandler;
 import com.woonoz.proxy.servlet.HttpEntityEnclosingHeadersHandler;
 import com.woonoz.proxy.servlet.UrlRewriter;
 
-public class PostClientHeadersHandlerTest {
+public class HttpEntityEnclosingHeadersHandlerTest {
 
 	@Test
 	public void testReferer() throws URISyntaxException, MalformedURLException {
