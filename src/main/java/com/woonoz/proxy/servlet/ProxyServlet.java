@@ -91,6 +91,11 @@ public class ProxyServlet extends HttpServlet {
 		new HttpPostRequestHandler(request, response, targetServer, client).execute();
 	}
 
+	@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		new HttpPutRequestHandler(request, response, targetServer, client).execute();
+	}
+
 	private int getPortOrDefault(int port) {
 		if (port == -1) {
 			return HTTP_DEFAULT_PORT;
