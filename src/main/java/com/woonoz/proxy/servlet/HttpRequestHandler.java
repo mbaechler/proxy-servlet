@@ -93,13 +93,13 @@ public abstract class HttpRequestHandler {
 			try {
 				response.getOutputStream().flush();
 			} catch (IOException e) {
-				logger.error(e);
+				logger.error("Exception flushing OutputStream ", e);
 			}
 		}
 	}
 
 	private void handleException(HttpRequestBase httpCommand, Exception e) {
-		logger.error(e);
+		logger.error("Exception handling httpCommand " + httpCommand, e);
 		if (httpCommand != null) {
 			httpCommand.abort();
 		}
