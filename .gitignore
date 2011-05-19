@@ -3,3 +3,5 @@
 /.project
 /.classpath
 /eclipse-build
+src/main/java/META-INF
+
