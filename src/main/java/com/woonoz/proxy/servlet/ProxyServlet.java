@@ -35,6 +35,7 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
 
 public class ProxyServlet extends HttpServlet {
 
@@ -47,28 +48,34 @@ public class ProxyServlet extends HttpServlet {
 	}
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
+	public void init(ServletConfig servletConfig) throws ServletException {
 		try {
-			URL targetUrl = new URL(config.getInitParameter("targetUrl"));
-			if (targetUrl != null) {
-				init(targetUrl, 200);
-			}
+            ProxyServletConfig config = new ProxyServletConfig( servletConfig );
+            init( config );
 		} catch (IOException e) {
 			throw new ServletException(e);
 		}
 	}
 
-	public void init(final URL targetServer, int maxCnx) {
-		this.targetServer = targetServer;
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme(targetServer.getProtocol(), getPortOrDefault(targetServer.getPort()), PlainSocketFactory.getSocketFactory()));
-		BasicHttpParams httpParams = new BasicHttpParams();
-		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(schemeRegistry);
-		cm.setDefaultMaxPerRoute(maxCnx);
-		cm.setMaxTotal(maxCnx);
-		client = new DefaultHttpClient(cm, httpParams);
-		client.removeResponseInterceptorByClass(ResponseProcessCookies.class);
-		client.removeRequestInterceptorByClass(RequestAddCookies.class);
+	public void init( URL targetServer, int maxCnx ) {
+        init( new ProxyServletConfig( targetServer, maxCnx ) );
+    }
+
+	public void init( ProxyServletConfig config ) {
+		targetServer = config.getTargetUrl();
+        if (targetServer != null) {
+            SchemeRegistry schemeRegistry = new SchemeRegistry();
+            schemeRegistry.register(new Scheme(targetServer.getProtocol(), getPortOrDefault(targetServer.getPort()), PlainSocketFactory.getSocketFactory()));
+            BasicHttpParams httpParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout( httpParams, config.getConnectionTimeout() );
+            HttpConnectionParams.setSoTimeout( httpParams, config.getSocketTimeout() );
+            ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(schemeRegistry);
+            cm.setDefaultMaxPerRoute( config.getMaxConnections() );
+            cm.setMaxTotal( config.getMaxConnections() );
+            client = new DefaultHttpClient(cm, httpParams);
+            client.removeResponseInterceptorByClass(ResponseProcessCookies.class);
+            client.removeRequestInterceptorByClass(RequestAddCookies.class);
+        }
 	}
 
 	@Override
