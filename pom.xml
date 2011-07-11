@@ -3,6 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+	  <groupId>org.sonatype.oss</groupId>
+	  <artifactId>oss-parent</artifactId>
+	  <version>7</version>
+	</parent>
+
 	<groupId>com.googlecode.gwt-proxy-servlet</groupId>
 	<artifactId>proxy</artifactId>
 	<packaging>jar</packaging>
@@ -18,10 +25,17 @@
 	  </license>
 	</licenses>
 	<scm>
+	  <connection>https://github.com/mbaechler/proxy-servlet.git</connection>
+	  <developerConnection>scm:git://github.com/mbaechler/proxy-servlet.git</developerConnection>
 	  <url>https://github.com/mbaechler/proxy-servlet.git/</url>
 	</scm>
-
-
+	<developers>
+	  <developer>
+	    <id>matthieu</id>
+	    <name>Matthieu Baechler</name>
+	    <email>matthieu.baechler@gmail.com</email>
+	  </developer>
+	</developers>
 	<properties>
 		<maven.compiler.source>1.5</maven.compiler.source>
 		<maven.compiler.target>1.5</maven.compiler.target>
