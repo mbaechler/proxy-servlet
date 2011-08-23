@@ -24,8 +24,8 @@
 	  </license>
 	</licenses>
 	<scm>
-	  <connection>scm:git:git://mbaechler@github.com/mbaechler/proxy-servlet.git</connection>
-	  <developerConnection>scm:git:git://mbaechler@github.com/mbaechler/proxy-servlet.git</developerConnection>
+	  <connection>scm:git:git@github.com/mbaechler/proxy-servlet.git</connection>
+	  <developerConnection>scm:git:git@github.com/mbaechler/proxy-servlet.git</developerConnection>
 	  <url>https://github.com/mbaechler/proxy-servlet.git/</url>
 	</scm>
 	<developers>
