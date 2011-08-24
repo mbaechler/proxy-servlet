@@ -101,6 +101,9 @@ public class UrlRewriterTest {
 		return new URL("http://localhost:8180/services/");
 	}
 
+	private URL buildRedirectUrlRoot() throws MalformedURLException {
+		return new URL("http://localhost:8180");
+	}
 
 	private URL buildRedirectUrlWithoutPort() throws MalformedURLException {
 		return new URL("http://localhost/services/");
@@ -215,6 +218,17 @@ public class UrlRewriterTest {
 		URI requestUri = new URI("https://online.woonoz-pro.com/wol-wnz-pro-2/com.woonoz.gwt.woonoz.Woonoz/proxy/gwt/AuthenticationServiceService");
 		URI expectedUri = new URI("http://localhost:8180/services-wnz-pro-2/gwt/AuthenticationServiceService");
 		Assert.assertEquals(expectedUri, rewriter.rewriteUri(requestUri));
+		EasyMock.verify(request);
+	}
+
+	@Test
+	public void testRewriteUriRedirectToRoot() throws MalformedURLException, URISyntaxException {
+		HttpServletRequest request = buildGoogleDotComServletRequest();
+		URL redirectUrl = buildRedirectUrlRoot();
+		UrlRewriter rewriter = new UrlRewriterImpl(request, redirectUrl);
+		URI uri = new URI("http://www.google.com/proxy/doc/from/root/index.html");
+		URI expectedUri = new URI("http://localhost:8180/proxy/doc/from/root/index.html");
+		Assert.assertEquals(expectedUri, rewriter.rewriteUri(uri));
 		EasyMock.verify(request);
 	}
 

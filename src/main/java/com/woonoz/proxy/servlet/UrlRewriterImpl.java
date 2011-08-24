@@ -96,7 +96,7 @@ public class UrlRewriterImpl implements UrlRewriter {
 	
 	private String rewritePathIfNeeded(String requestedPath) {
 		String servletURI = servletRequest.getContextPath() + servletRequest.getServletPath();
-		if (requestIsSubpathOfServlet(requestedPath)) {
+		if (!targetServer.getPath().isEmpty() && requestIsSubpathOfServlet(requestedPath)) {
 			return appendPathFragments(targetServer.getPath(), requestedPath.substring(servletURI.length()));
 		} else {
 			return requestedPath;
@@ -108,6 +108,9 @@ public class UrlRewriterImpl implements UrlRewriter {
 	}
 	
 	private static String removeTrailingSlashes(final String text) {
+		if (text.isEmpty()) {
+			return text;
+		}
 		final CharacterIterator it = new StringCharacterIterator(text);
 		Character c = it.last();
 		while (c.equals('/')) {
@@ -117,6 +120,9 @@ public class UrlRewriterImpl implements UrlRewriter {
 	}
 
 	private static String removeLeadingSlashes(final String text) {
+		if (text.isEmpty()) {
+			return text;
+		}
 		final CharacterIterator it = new StringCharacterIterator(text);
 		Character c = it.first();
 		while (c.equals('/')) {
