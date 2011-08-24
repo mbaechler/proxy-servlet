@@ -35,10 +35,6 @@
 	    <email>matthieu.baechler@gmail.com</email>
 	  </developer>
 	</developers>
-	<properties>
-		<maven.compiler.source>6</maven.compiler.source>
-		<maven.compiler.target>6</maven.compiler.target>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -61,7 +57,7 @@
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.1</version>
+			<version>1.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -72,12 +68,35 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.1.1</version>
+			<version>4.1.2</version>
+			<exclusions>
+        		<exclusion>
+          			<groupId>commons-logging</groupId>
+          			<artifactId>commons-logging</artifactId>
+        		</exclusion>
+        	</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
-			<version>4.1.1</version>
+			<version>4.1.2</version>
+			<exclusions>
+        		<exclusion>
+          			<groupId>commons-logging</groupId>
+          			<artifactId>commons-logging</artifactId>
+        		</exclusion>
+        	</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>1.6.2</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

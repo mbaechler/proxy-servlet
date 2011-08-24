@@ -32,8 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -42,10 +40,12 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class HttpRequestHandler {
 
-	private static final Log logger = LogFactory.getLog("com.woonoz.proxy.servlet");
+	private static final Logger logger = LoggerFactory.getLogger("com.woonoz.proxy.servlet");
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 	private final URL targetServer;
