@@ -27,6 +27,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.client.protocol.RequestAddCookies;
 import org.apache.http.client.protocol.ResponseProcessCookies;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -36,6 +39,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.protocol.HttpContext;
 
 public class ProxyServlet extends HttpServlet {
 
@@ -75,9 +79,27 @@ public class ProxyServlet extends HttpServlet {
             client = new DefaultHttpClient(cm, httpParams);
             client.removeResponseInterceptorByClass(ResponseProcessCookies.class);
             client.removeRequestInterceptorByClass(RequestAddCookies.class);
+            
+            final String remoteUserHeader = config.getRemoteUserHeader(); 
+            if (null != remoteUserHeader) {
+                client.addRequestInterceptor(new HttpRequestInterceptor() {
+                    
+                    @Override
+                    public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
+                        request.removeHeaders(remoteUserHeader);
+                        HttpRequestHandler handler;
+                        if (context != null && (handler = (HttpRequestHandler) context.getAttribute(HttpRequestHandler.class.getName())) != null) {
+                            String remoteUser = handler.getRequest().getRemoteUser();
+                            if (remoteUser != null) {
+                                request.addHeader(remoteUserHeader, remoteUser);
+                            }
+                        }
+                    }
+                });
+            }
         }
 	}
-
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		new HttpGetRequestHandler(request, response, targetServer, client).execute();
@@ -125,5 +147,4 @@ public class ProxyServlet extends HttpServlet {
 			return port;
 		}
 	}
-
 }

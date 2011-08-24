@@ -23,10 +23,12 @@ public class ProxyServletConfig
     private static final int DEFAULT_MAX_CONNECTIONS = 200;
     private static final int DEFAULT_CONNECTION_TIMEOUT = 1000;
     private static final int DEFAULT_SOCKET_TIMEOUT = 5000;
+    private static final String DEFAULT_REMOTE_USER_HEADER = null;
     private final URL targetUrl;
     private final int maxConnections;
     private final int connectionTimeout;
     private final int socketTimeout;
+    private final String remoteUserHeader;
 
     public ProxyServletConfig( ServletConfig config )
             throws MalformedURLException, NumberFormatException
@@ -45,24 +47,32 @@ public class ProxyServletConfig
 
         String soTimeoutParam = config.getInitParameter( "socket-timeout" );
         socketTimeout = soTimeoutParam != null ? Integer.valueOf( soTimeoutParam ) : DEFAULT_SOCKET_TIMEOUT;
+        
+        remoteUserHeader = config.getInitParameter( "remote-user-header" );
     }
 
     public ProxyServletConfig( URL targetUrl )
     {
-        this( targetUrl, DEFAULT_MAX_CONNECTIONS, DEFAULT_CONNECTION_TIMEOUT, DEFAULT_SOCKET_TIMEOUT );
+        this( targetUrl, DEFAULT_MAX_CONNECTIONS, DEFAULT_CONNECTION_TIMEOUT, DEFAULT_SOCKET_TIMEOUT, DEFAULT_REMOTE_USER_HEADER );
     }
 
     public ProxyServletConfig( URL targetUrl, int maxConnections )
     {
-        this( targetUrl, maxConnections, DEFAULT_MAX_CONNECTIONS, DEFAULT_SOCKET_TIMEOUT );
+        this( targetUrl, maxConnections, DEFAULT_MAX_CONNECTIONS, DEFAULT_SOCKET_TIMEOUT, DEFAULT_REMOTE_USER_HEADER );
     }
 
     public ProxyServletConfig( URL targetUrl, int maxConnections, int connectionTimeout, int socketTimeout )
+    {
+        this( targetUrl, maxConnections, connectionTimeout, socketTimeout, DEFAULT_REMOTE_USER_HEADER );
+    }
+    
+    public ProxyServletConfig( URL targetUrl, int maxConnections, int connectionTimeout, int socketTimeout, String remoteUserHeader )
     {
         this.targetUrl = targetUrl;
         this.maxConnections = maxConnections;
         this.connectionTimeout = connectionTimeout;
         this.socketTimeout = socketTimeout;
+        this.remoteUserHeader = remoteUserHeader;
     }
 
     public URL getTargetUrl()
@@ -85,4 +95,8 @@ public class ProxyServletConfig
         return socketTimeout;
     }
 
+    public String getRemoteUserHeader() 
+    {
+        return remoteUserHeader;
+    }
 }

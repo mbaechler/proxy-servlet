@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 public abstract class HttpRequestHandler {
@@ -75,8 +78,11 @@ public abstract class HttpRequestHandler {
 		ServerHeadersHandler serverHeadersHandler = new ServerHeadersHandler(urlRewriter);
 		HttpRequestBase httpCommand = null;
 		try {
+			logger.debug("Doing rewrite for uri: " + request.getRequestURL());
 			final URI targetUri = urlRewriter.rewriteUri(new URI(request.getRequestURL().toString()));
+			logger.debug("Making request for rewritten uri: " + targetUri);
 			httpCommand = createHttpCommand(targetUri, clientHeadersHandler);
+			logger.debug("http client command: " + httpCommand.getRequestLine() + ", headers: " + Arrays.asList(httpCommand.getAllHeaders()));
 			performHttpRequest(httpCommand, response, serverHeadersHandler);
 		} catch (URISyntaxException e) {
 			handleException(httpCommand, e);
@@ -99,7 +105,7 @@ public abstract class HttpRequestHandler {
 	}
 
 	private void handleException(HttpRequestBase httpCommand, Exception e) {
-		logger.error("Exception handling httpCommand " + httpCommand, e);
+		logger.error("Exception handling httpCommand " + (httpCommand != null ? httpCommand.getURI() : "(missing)") + ": " + e, e);
 		if (httpCommand != null) {
 			httpCommand.abort();
 		}
@@ -138,7 +144,10 @@ public abstract class HttpRequestHandler {
 	}
 
 	private void performHttpRequest(HttpRequestBase requestToServer, HttpServletResponse responseToClient, ServerHeadersHandler serverHeadersHandler) throws IOException, URISyntaxException {
-		HttpResponse responseFromServer = client.execute(requestToServer);
+		HttpContext context = new BasicHttpContext();
+		context.setAttribute(HttpRequestHandler.class.getName(), this);
+		HttpResponse responseFromServer = client.execute(requestToServer, context);
+		logger.debug("Performed request: " + requestToServer.getRequestLine() + " --> " + responseFromServer.getStatusLine());				
 		responseToClient.setStatus(responseFromServer.getStatusLine().getStatusCode());
 		copyHeaders(responseFromServer, responseToClient, serverHeadersHandler);
 		HttpEntity entity = responseFromServer.getEntity();
