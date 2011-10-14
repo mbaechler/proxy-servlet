@@ -36,12 +36,9 @@
 	  </developer>
 	</developers>
 
-	<properties>
-	  <self.version>1.0.3-SNAPSHOT</self.version>
-	</properties>
-
 	<modules>
 	  <module>core</module>
+	  <module>guice-extension-loader</module>
 	</modules>
 
 	<dependencyManagement>

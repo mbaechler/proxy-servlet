@@ -9,11 +9,10 @@
 	  <version>1.0.3-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.googlecode.gwt-proxy-servlet</groupId>
 	<artifactId>core</artifactId>
 	<packaging>jar</packaging>
 	<name>proxy-servlet</name>
-	<version>${self.version}</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<description>Generic part of the project</description>
 
 	<dependencies>
