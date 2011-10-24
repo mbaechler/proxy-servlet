@@ -13,12 +13,9 @@
  */
 package com.woonoz.proxy.servlet.config;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import javax.servlet.ServletConfig;
 
-public class ProxyServletConfig
-{
+public class ProxyServletConfig {
 
     private static final int DEFAULT_MAX_CONNECTIONS = 200;
     private static final int DEFAULT_CONNECTION_TIMEOUT = 1000;
@@ -29,27 +26,6 @@ public class ProxyServletConfig
     private final int connectionTimeout;
     private final int socketTimeout;
     private final String remoteUserHeader;
-
-    public ProxyServletConfig( ServletConfig config )
-            throws MalformedURLException, NumberFormatException
-    {
-        String targetUrlParam = config.getInitParameter( "targetUrl" );
-        if ( targetUrlParam == null ) {
-            targetUrlParam = config.getInitParameter( "target-url" );
-        }
-        targetUrl = targetUrlParam != null ? new URL( targetUrlParam ) : null;
-
-        String maxCoParam = config.getInitParameter( "max-connections" );
-        maxConnections = maxCoParam != null ? Integer.valueOf( maxCoParam ) : DEFAULT_MAX_CONNECTIONS;
-
-        String coTimeoutParam = config.getInitParameter( "connection-timeout" );
-        connectionTimeout = coTimeoutParam != null ? Integer.valueOf( coTimeoutParam ) : DEFAULT_CONNECTION_TIMEOUT;
-
-        String soTimeoutParam = config.getInitParameter( "socket-timeout" );
-        socketTimeout = soTimeoutParam != null ? Integer.valueOf( soTimeoutParam ) : DEFAULT_SOCKET_TIMEOUT;
-        
-        remoteUserHeader = config.getInitParameter( "remote-user-header" );
-    }
 
     public ProxyServletConfig( URL targetUrl )
     {
@@ -66,13 +42,13 @@ public class ProxyServletConfig
         this( targetUrl, maxConnections, connectionTimeout, socketTimeout, DEFAULT_REMOTE_USER_HEADER );
     }
     
-    public ProxyServletConfig( URL targetUrl, int maxConnections, int connectionTimeout, int socketTimeout, String remoteUserHeader )
+    public ProxyServletConfig( URL targetUrl, Integer maxConnections, Integer connectionTimeout, Integer socketTimeout, String remoteUserHeader )
     {
         this.targetUrl = targetUrl;
-        this.maxConnections = maxConnections;
-        this.connectionTimeout = connectionTimeout;
-        this.socketTimeout = socketTimeout;
-        this.remoteUserHeader = remoteUserHeader;
+        this.maxConnections = maxConnections != null ? maxConnections : DEFAULT_MAX_CONNECTIONS;
+        this.connectionTimeout = connectionTimeout != null ? connectionTimeout : DEFAULT_CONNECTION_TIMEOUT;
+        this.socketTimeout = socketTimeout != null ? socketTimeout : DEFAULT_SOCKET_TIMEOUT;
+        this.remoteUserHeader = remoteUserHeader != null ? remoteUserHeader : DEFAULT_REMOTE_USER_HEADER;
     }
 
     public URL getTargetUrl()

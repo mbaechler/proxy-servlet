@@ -26,6 +26,7 @@ import javax.servlet.ServletException;
 
 
 import com.woonoz.proxy.servlet.config.ProxyServletConfig;
+import com.woonoz.proxy.servlet.config.ProxyServletConfigXmlFactory;
 
 public class ProxyServlet extends AbstractProxyServlet {
 
@@ -36,7 +37,7 @@ public class ProxyServlet extends AbstractProxyServlet {
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 		try {
-            ProxyServletConfig config = new ProxyServletConfig( servletConfig );
+            ProxyServletConfig config = ProxyServletConfigXmlFactory.createConfig(servletConfig);
             init( config );
 		} catch (IOException e) {
 			throw new ServletException(e);
