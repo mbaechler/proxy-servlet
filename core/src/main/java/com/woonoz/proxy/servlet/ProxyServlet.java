@@ -41,6 +41,16 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HttpContext;
 
+import com.woonoz.proxy.servlet.base.HttpRequestHandler;
+import com.woonoz.proxy.servlet.config.ProxyServletConfig;
+import com.woonoz.proxy.servlet.http.verb.HttpDeleteRequestHandler;
+import com.woonoz.proxy.servlet.http.verb.HttpGetRequestHandler;
+import com.woonoz.proxy.servlet.http.verb.HttpHeadRequestHandler;
+import com.woonoz.proxy.servlet.http.verb.HttpOptionsRequestHandler;
+import com.woonoz.proxy.servlet.http.verb.HttpPostRequestHandler;
+import com.woonoz.proxy.servlet.http.verb.HttpPutRequestHandler;
+import com.woonoz.proxy.servlet.http.verb.HttpTraceRequestHandler;
+
 public class ProxyServlet extends HttpServlet {
 
 	private static final int HTTP_DEFAULT_PORT = 80;
