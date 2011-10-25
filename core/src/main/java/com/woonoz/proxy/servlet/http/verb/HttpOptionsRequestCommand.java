@@ -32,9 +32,9 @@ import org.apache.http.client.methods.HttpRequestBase;
 import com.woonoz.proxy.servlet.base.AbstractHttpRequestCommand;
 import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 
-public class HttpOptionsRequestHandler extends AbstractHttpRequestCommand {
+public class HttpOptionsRequestCommand extends AbstractHttpRequestCommand {
 
-	public HttpOptionsRequestHandler(HttpRequestHandler httpRequestHandler, HttpServletRequest request, HttpServletResponse response, HttpClient client) {
+	public HttpOptionsRequestCommand(HttpRequestHandler httpRequestHandler, HttpServletRequest request, HttpServletResponse response, HttpClient client) {
 		super(httpRequestHandler, request, response, client);
 	}
 

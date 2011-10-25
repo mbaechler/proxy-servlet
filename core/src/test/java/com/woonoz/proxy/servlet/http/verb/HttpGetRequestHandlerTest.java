@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import com.woonoz.proxy.servlet.base.HttpRequestHandlerImpl;
 import com.woonoz.proxy.servlet.http.HttpRequestHandler;
-import com.woonoz.proxy.servlet.http.verb.HttpGetRequestHandler;
+import com.woonoz.proxy.servlet.http.verb.HttpGetRequestCommand;
 
 public class HttpGetRequestHandlerTest {
 
@@ -30,8 +30,8 @@ public class HttpGetRequestHandlerTest {
 		
 		HttpRequestHandler handler = 
 				new HttpRequestHandlerImpl.HttpRequestHandlerFactoryImpl().create(request, targetServer);
-		HttpGetRequestHandler httpGetRequestHandler = 
-			new HttpGetRequestHandler(handler, request, response, client);
+		HttpGetRequestCommand httpGetRequestHandler = 
+			new HttpGetRequestCommand(handler, request, response, client);
 		
 		httpGetRequestHandler.execute();
 		

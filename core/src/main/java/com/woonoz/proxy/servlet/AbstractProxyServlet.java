@@ -26,13 +26,13 @@ import com.woonoz.proxy.servlet.base.AbstractHttpRequestCommand;
 import com.woonoz.proxy.servlet.config.ProxyServletConfig;
 import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 import com.woonoz.proxy.servlet.http.HttpRequestHandler.Factory;
-import com.woonoz.proxy.servlet.http.verb.HttpDeleteRequestHandler;
-import com.woonoz.proxy.servlet.http.verb.HttpGetRequestHandler;
-import com.woonoz.proxy.servlet.http.verb.HttpHeadRequestHandler;
-import com.woonoz.proxy.servlet.http.verb.HttpOptionsRequestHandler;
-import com.woonoz.proxy.servlet.http.verb.HttpPostRequestHandler;
-import com.woonoz.proxy.servlet.http.verb.HttpPutRequestHandler;
-import com.woonoz.proxy.servlet.http.verb.HttpTraceRequestHandler;
+import com.woonoz.proxy.servlet.http.verb.HttpDeleteRequestCommand;
+import com.woonoz.proxy.servlet.http.verb.HttpGetRequestCommand;
+import com.woonoz.proxy.servlet.http.verb.HttpHeadRequestCommand;
+import com.woonoz.proxy.servlet.http.verb.HttpOptionsRequestCommand;
+import com.woonoz.proxy.servlet.http.verb.HttpPostRequestCommand;
+import com.woonoz.proxy.servlet.http.verb.HttpPutRequestCommand;
+import com.woonoz.proxy.servlet.http.verb.HttpTraceRequestCommand;
 
 public abstract class AbstractProxyServlet extends HttpServlet {
 
@@ -85,49 +85,49 @@ public abstract class AbstractProxyServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
 		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
-		new HttpGetRequestHandler(httpRequestHandler, request, response, client).execute();
+		new HttpGetRequestCommand(httpRequestHandler, request, response, client).execute();
 	}
 
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
-		new HttpDeleteRequestHandler(httpRequestHandler, request, response, client).execute();
+		new HttpDeleteRequestCommand(httpRequestHandler, request, response, client).execute();
 	}
 
 	@Override
 	protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
 		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
-		new HttpHeadRequestHandler(httpRequestHandler, request, response, client).execute();
+		new HttpHeadRequestCommand(httpRequestHandler, request, response, client).execute();
 	}
 
 	@Override
 	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
-		new HttpOptionsRequestHandler(httpRequestHandler, request, response, client).execute();
+		new HttpOptionsRequestCommand(httpRequestHandler, request, response, client).execute();
 	}
 
 	@Override
 	protected void doTrace(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
-		new HttpTraceRequestHandler(httpRequestHandler, request, response, client).execute();
+		new HttpTraceRequestCommand(httpRequestHandler, request, response, client).execute();
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
 		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
-		new HttpPostRequestHandler(httpRequestHandler, request, response, client).execute();
+		new HttpPostRequestCommand(httpRequestHandler, request, response, client).execute();
 	}
 
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
 		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
-		new HttpPutRequestHandler(httpRequestHandler, request, response, client).execute();
+		new HttpPutRequestCommand(httpRequestHandler, request, response, client).execute();
 	}
 
 	private int getPortOrDefault(int port) {

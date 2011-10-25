@@ -32,9 +32,9 @@ import org.apache.http.client.methods.HttpRequestBase;
 import com.woonoz.proxy.servlet.base.AbstractHttpRequestCommand;
 import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 
-public class HttpDeleteRequestHandler extends AbstractHttpRequestCommand {
+public class HttpDeleteRequestCommand extends AbstractHttpRequestCommand {
 
-	public HttpDeleteRequestHandler(HttpRequestHandler httpRequestHandler, HttpServletRequest request, HttpServletResponse response, HttpClient client) {
+	public HttpDeleteRequestCommand(HttpRequestHandler httpRequestHandler, HttpServletRequest request, HttpServletResponse response, HttpClient client) {
 		super(httpRequestHandler, request, response, client);
 	}
 

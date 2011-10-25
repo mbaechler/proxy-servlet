@@ -26,20 +26,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpTrace;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpPut;
 
-import com.woonoz.proxy.servlet.base.AbstractHttpRequestCommand;
+import com.woonoz.proxy.servlet.base.HttpEntityEnclosingRequestHandler;
 import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 
-public class HttpTraceRequestHandler extends AbstractHttpRequestCommand {
+public class HttpPutRequestCommand extends HttpEntityEnclosingRequestHandler {
 
-	public HttpTraceRequestHandler(HttpRequestHandler httpRequestHandler, HttpServletRequest request, HttpServletResponse response, HttpClient client) {
+	public HttpPutRequestCommand(HttpRequestHandler httpRequestHandler, HttpServletRequest request, HttpServletResponse response, HttpClient client) {
 		super(httpRequestHandler, request, response, client);
 	}
 
 	@Override
-	protected HttpRequestBase createHttpRequestBase(URI targetUri) {
-		return new HttpTrace(targetUri);
-	}
+	protected HttpEntityEnclosingRequestBase createHttpRequestBase(URI targetUri) {
+		return new HttpPut(targetUri);
+	}	
 }
