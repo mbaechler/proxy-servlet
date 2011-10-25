@@ -38,6 +38,8 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.impl.cookie.BestMatchSpec;
 import org.apache.http.message.BasicHeader;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.woonoz.proxy.servlet.http.cookie.CookieFormatter;
 import com.woonoz.proxy.servlet.http.exception.InvalidCookieException;
 import com.woonoz.proxy.servlet.url.UrlRewriter;
@@ -65,12 +67,12 @@ public class UrlRewriterImpl implements UrlRewriter {
 		if (requestedUrlPointsToServlet(url)) {
 			final String targetPath = rewritePathIfNeeded(url.getPath());
 			return URIUtils.createURI(targetServer.getProtocol(), targetServer.getHost(), 
-					targetServer.getPort(), targetPath, servletRequest.getQueryString(), null);
+					targetServer.getPort(), Strings.emptyToNull(targetPath), servletRequest.getQueryString(), null);
 		} else {
 			return url;
 		}
 	}
-
+	
 	public String rewriteCookie(String headerValue) throws URISyntaxException, InvalidCookieException {
 		BestMatchSpec parser = new BestMatchSpec();
 		List<Cookie> cookies;
@@ -103,12 +105,14 @@ public class UrlRewriterImpl implements UrlRewriter {
 		if (!targetServer.getPath().isEmpty() && requestIsSubpathOfServlet(requestedPath)) {
 			return appendPathFragments(targetServer.getPath(), requestedPath.substring(servletURI.length()));
 		} else {
-			return requestedPath;
+			return requestedPath.substring(servletURI.length());
 		}
 	}
 
 	private static String appendPathFragments(final String firstPart, final String secondPart) {
-		return removeTrailingSlashes(firstPart) + "/" + removeLeadingSlashes(secondPart);
+		return Joiner.on('/').skipNulls().join(
+				Strings.emptyToNull(removeTrailingSlashes(firstPart)),
+				Strings.emptyToNull(removeLeadingSlashes(secondPart)));
 	}
 	
 	private static String removeTrailingSlashes(final String text) {

@@ -87,6 +87,14 @@ public class UrlRewriterTest {
 		return request;
 	}
 
+	private HttpServletRequest buildRequestBug3() {
+		HttpServletRequest request = buildServletRequest("/happy/", 
+				"/gwt-proxy-1.0.3-SNAPSHOT/happy/", 
+				"/gwt-proxy-1.0.3-SNAPSHOT", null, "localhost", 8080);
+		EasyMock.replay(request);
+		return request;
+	}
+	
 	private URL buildRedirectUrl() throws MalformedURLException {
 		return new URL("http://localhost:8180/services/");
 	}
@@ -212,12 +220,35 @@ public class UrlRewriterTest {
 	}
 
 	@Test
+	public void testRewriteRequestMatchServletPath() throws MalformedURLException, URISyntaxException {
+		HttpServletRequest request = buildRequestBug3();
+		URL redirectUrl = new URL("http://www.google.com");
+		UrlRewriter rewriter = new UrlRewriterImpl(request, redirectUrl);
+		URI requestUri = new URI("http://localhost:8080/gwt-proxy-1.0.3-SNAPSHOT/happy/");
+		URI expectedUri = new URI("http://www.google.com/");
+		Assert.assertEquals(expectedUri, rewriter.rewriteUri(requestUri));
+		EasyMock.verify(request);
+	}
+
+	@Test
+	public void testRewriteRequestMatchServletPath2() throws MalformedURLException, URISyntaxException {
+		HttpServletRequest request = buildRequestBug3();
+		URL redirectUrl = new URL("http://www.google.com/linux");
+		UrlRewriter rewriter = new UrlRewriterImpl(request, redirectUrl);
+		URI requestUri = new URI("http://localhost:8080/gwt-proxy-1.0.3-SNAPSHOT/happy/");
+		URI expectedUri = new URI("http://www.google.com/linux");
+		Assert.assertEquals(expectedUri, rewriter.rewriteUri(requestUri));
+		EasyMock.verify(request);
+	}
+
+	
+	@Test
 	public void testRewriteUriRedirectToRoot() throws MalformedURLException, URISyntaxException {
 		HttpServletRequest request = buildGoogleDotComServletRequest();
 		URL redirectUrl = buildRedirectUrlRoot();
 		UrlRewriter rewriter = new UrlRewriterImpl(request, redirectUrl);
 		URI uri = new URI("http://www.google.com/proxy/doc/from/root/index.html");
-		URI expectedUri = new URI("http://localhost:8180/proxy/doc/from/root/index.html");
+		URI expectedUri = new URI("http://localhost:8180/doc/from/root/index.html");
 		Assert.assertEquals(expectedUri, rewriter.rewriteUri(uri));
 		EasyMock.verify(request);
 	}
