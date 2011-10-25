@@ -30,10 +30,10 @@ import com.woonoz.proxy.servlet.url.UrlRewriter;
 public class ServerHeadersHandler extends AbstractHeadersHandler {
 
 	public ServerHeadersHandler(UrlRewriter urlRewriter) {
-		super(urlRewriter, HeaderToSubstitute.values());
+		super(urlRewriter, RequiredHeaders.values());
 	}
 	
-	private enum HeaderToSubstitute implements HeadersFilter {
+	private enum RequiredHeaders implements HeadersFilter {
 		Host {
 			public String handleValue(String headerValue, UrlRewriter urlRewriter) throws URISyntaxException, MalformedURLException {
 				return urlRewriter.rewriteHost(headerValue);

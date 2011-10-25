@@ -29,16 +29,14 @@ import com.woonoz.proxy.servlet.url.UrlRewriter;
 public class HttpEntityEnclosingHeadersHandler extends ClientHeadersHandler {
 
 	public HttpEntityEnclosingHeadersHandler(UrlRewriter urlRewriter) {
-		super(urlRewriter, HeaderToSubstitute.values());
+		super(urlRewriter, RequiredHeaders.values());
 	}
 	
 	public HttpEntityEnclosingHeadersHandler(UrlRewriter urlRewriter, Iterable<HeadersFilter> filters) {
 		super(urlRewriter, filters);
 	}
 
-
-
-	private enum HeaderToSubstitute implements HeadersFilter {
+	private enum RequiredHeaders implements HeadersFilter {
 		ContentType {
 			public String handleValue(String headerValue, UrlRewriter urlRewriter) throws URISyntaxException {
 				if (headerValue.startsWith("multipart")) {

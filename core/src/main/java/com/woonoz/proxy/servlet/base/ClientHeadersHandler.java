@@ -46,11 +46,11 @@ public class ClientHeadersHandler extends AbstractHeadersHandler {
 	}
 	
 	private static Iterable<HeadersFilter> joinFilters(final Iterable<HeadersFilter> filters) {
-		Iterable<HeadersFilter> requiredFilters = Arrays.<HeadersFilter>asList(HeaderToSubstitute.values());
+		Iterable<HeadersFilter> requiredFilters = Arrays.<HeadersFilter>asList(RequiredFilters.values());
 		return Iterables.concat(requiredFilters, filters);
 	}
 	
-	private enum HeaderToSubstitute implements HeadersFilter {
+	private enum RequiredFilters implements HeadersFilter {
 		Host {
 			public String handleValue(String headerValue, UrlRewriter urlRewriter) throws URISyntaxException, MalformedURLException {
 				return urlRewriter.rewriteHost(headerValue);
