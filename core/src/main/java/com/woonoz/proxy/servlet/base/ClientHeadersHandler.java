@@ -41,7 +41,7 @@ public class ClientHeadersHandler extends AbstractHeadersHandler {
 		this(urlRewriter, Arrays.asList(filters));
 	}
 	
-	protected ClientHeadersHandler(UrlRewriter urlRewriter, Iterable<HeadersFilter> filters) {
+	public ClientHeadersHandler(UrlRewriter urlRewriter, Iterable<HeadersFilter> filters) {
 		super(urlRewriter, joinFilters(filters));
 	}
 	

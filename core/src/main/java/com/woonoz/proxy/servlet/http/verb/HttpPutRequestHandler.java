@@ -21,7 +21,6 @@
 package com.woonoz.proxy.servlet.http.verb;
 
 import java.net.URI;
-import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,11 +30,12 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPut;
 
 import com.woonoz.proxy.servlet.base.HttpEntityEnclosingRequestHandler;
+import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 
 public class HttpPutRequestHandler extends HttpEntityEnclosingRequestHandler {
 
-	public HttpPutRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
-		super(request, response, targetServer, client);
+	public HttpPutRequestHandler(HttpRequestHandler httpRequestHandler, HttpServletRequest request, HttpServletResponse response, HttpClient client) {
+		super(httpRequestHandler, request, response, client);
 	}
 
 	@Override

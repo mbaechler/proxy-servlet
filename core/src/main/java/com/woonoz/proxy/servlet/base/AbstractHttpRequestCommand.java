@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
 
@@ -43,21 +42,22 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 import com.woonoz.proxy.servlet.http.exception.InvalidCookieException;
 import com.woonoz.proxy.servlet.url.UrlRewriter;
 
-public abstract class HttpRequestHandler {
+public abstract class AbstractHttpRequestCommand {
 
 	private static final Logger logger = LoggerFactory.getLogger("com.woonoz.proxy.servlet");
+	protected final HttpRequestHandler httpRequestHandler;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
-	private final URL targetServer;
 	private final HttpClient client;
 	
-	public HttpRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
+	public AbstractHttpRequestCommand(HttpRequestHandler httpRequestHandler, HttpServletRequest request, HttpServletResponse response, HttpClient client) {
+		this.httpRequestHandler = httpRequestHandler;
 		this.request = request;
 		this.response = response;
-		this.targetServer = targetServer;
 		this.client = client;
 	}
 	
@@ -71,14 +71,15 @@ public abstract class HttpRequestHandler {
 		copyHeaders(getRequest(), httpRequestBase, clientHeadersHandler);
 		return httpRequestBase;
 	}
-	protected ClientHeadersHandler createClientHeadersHandler(final UrlRewriter urlRewriter) {
-		return new ClientHeadersHandler(urlRewriter);
+	
+	protected ClientHeadersHandler getClientHeadersHandler() {
+		return httpRequestHandler.getClientHeadersHandler();
 	}
 	
 	public void execute() {
-		UrlRewriter urlRewriter = new UrlRewriterImpl(request, targetServer);
-		ClientHeadersHandler clientHeadersHandler = createClientHeadersHandler(urlRewriter);
-		ServerHeadersHandler serverHeadersHandler = new ServerHeadersHandler(urlRewriter);
+		ClientHeadersHandler clientHeadersHandler = getClientHeadersHandler();
+		ServerHeadersHandler serverHeadersHandler = httpRequestHandler.getServerHeadersHandler();
+		UrlRewriter urlRewriter = httpRequestHandler.getUrlRewriter();
 		HttpRequestBase httpCommand = null;
 		try {
 			logger.debug("Doing rewrite for uri: {}", request.getRequestURL());
@@ -148,7 +149,7 @@ public abstract class HttpRequestHandler {
 
 	private void performHttpRequest(HttpRequestBase requestToServer, HttpServletResponse responseToClient, ServerHeadersHandler serverHeadersHandler) throws IOException, URISyntaxException {
 		HttpContext context = new BasicHttpContext();
-		context.setAttribute(HttpRequestHandler.class.getName(), this);
+		context.setAttribute(AbstractHttpRequestCommand.class.getName(), this);
 		HttpResponse responseFromServer = client.execute(requestToServer, context);
 		logger.debug("Performed request: {} --> {}", requestToServer.getRequestLine(), responseFromServer.getStatusLine());				
 		responseToClient.setStatus(responseFromServer.getStatusLine().getStatusCode());

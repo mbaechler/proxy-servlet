@@ -22,8 +22,10 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HttpContext;
 
-import com.woonoz.proxy.servlet.base.HttpRequestHandler;
+import com.woonoz.proxy.servlet.base.AbstractHttpRequestCommand;
 import com.woonoz.proxy.servlet.config.ProxyServletConfig;
+import com.woonoz.proxy.servlet.http.HttpRequestHandler;
+import com.woonoz.proxy.servlet.http.HttpRequestHandler.Factory;
 import com.woonoz.proxy.servlet.http.verb.HttpDeleteRequestHandler;
 import com.woonoz.proxy.servlet.http.verb.HttpGetRequestHandler;
 import com.woonoz.proxy.servlet.http.verb.HttpHeadRequestHandler;
@@ -37,12 +39,14 @@ public abstract class AbstractProxyServlet extends HttpServlet {
 	private static final int HTTP_DEFAULT_PORT = 80;
 	private URL targetServer;
 	private DefaultHttpClient client;
+	private Factory requestHandlerFactory;
 
 	public AbstractProxyServlet() {
 		super();
 	}
 
-	public void init(ProxyServletConfig config) {
+	public void init(ProxyServletConfig config, HttpRequestHandler.Factory requestHandlerFactory) {
+		this.requestHandlerFactory = requestHandlerFactory;
 		targetServer = config.getTargetUrl();
 	    if (targetServer != null) {
 	        SchemeRegistry schemeRegistry = new SchemeRegistry();
@@ -64,8 +68,8 @@ public abstract class AbstractProxyServlet extends HttpServlet {
 	                @Override
 	                public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
 	                    request.removeHeaders(remoteUserHeader);
-	                    HttpRequestHandler handler;
-	                    if (context != null && (handler = (HttpRequestHandler) context.getAttribute(HttpRequestHandler.class.getName())) != null) {
+	                    AbstractHttpRequestCommand handler;
+	                    if (context != null && (handler = (AbstractHttpRequestCommand) context.getAttribute(AbstractHttpRequestCommand.class.getName())) != null) {
 	                        String remoteUser = handler.getRequest().getRemoteUser();
 	                        if (remoteUser != null) {
 	                            request.addHeader(remoteUserHeader, remoteUser);
@@ -80,44 +84,51 @@ public abstract class AbstractProxyServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
-				new HttpGetRequestHandler(request, response, targetServer, client).execute();
-			}
+		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
+		new HttpGetRequestHandler(httpRequestHandler, request, response, client).execute();
+	}
 
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-				new HttpDeleteRequestHandler(request, response, targetServer, client).execute();
-			}
+		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
+		new HttpDeleteRequestHandler(httpRequestHandler, request, response, client).execute();
+	}
 
 	@Override
 	protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
-				new HttpHeadRequestHandler(request, response, targetServer, client).execute();
-			}
+		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
+		new HttpHeadRequestHandler(httpRequestHandler, request, response, client).execute();
+	}
 
 	@Override
 	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-				new HttpOptionsRequestHandler(request, response, targetServer, client).execute();
-			}
+		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
+		new HttpOptionsRequestHandler(httpRequestHandler, request, response, client).execute();
+	}
 
 	@Override
 	protected void doTrace(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-				new HttpTraceRequestHandler(request, response, targetServer, client).execute();
-			}
+		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
+		new HttpTraceRequestHandler(httpRequestHandler, request, response, client).execute();
+	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
-				new HttpPostRequestHandler(request, response, targetServer, client).execute();
-			}
+		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
+		new HttpPostRequestHandler(httpRequestHandler, request, response, client).execute();
+	}
 
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
-				new HttpPutRequestHandler(request, response, targetServer, client).execute();
-			}
+		HttpRequestHandler httpRequestHandler = requestHandlerFactory.create(request, targetServer);
+		new HttpPutRequestHandler(httpRequestHandler, request, response, client).execute();
+	}
 
 	private int getPortOrDefault(int port) {
 		if (port == -1) {

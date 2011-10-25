@@ -12,6 +12,8 @@ import org.easymock.EasyMock;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.woonoz.proxy.servlet.base.HttpRequestHandlerImpl;
+import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 import com.woonoz.proxy.servlet.http.verb.HttpGetRequestHandler;
 
 public class HttpGetRequestHandlerTest {
@@ -26,8 +28,10 @@ public class HttpGetRequestHandlerTest {
 		EasyMock.expect(response.getOutputStream()).andReturn(servletOutputStream).anyTimes();
 		EasyMock.replay(response);
 		
+		HttpRequestHandler handler = 
+				new HttpRequestHandlerImpl.HttpRequestHandlerFactoryImpl().create(request, targetServer);
 		HttpGetRequestHandler httpGetRequestHandler = 
-			new HttpGetRequestHandler(request, response, targetServer, client);
+			new HttpGetRequestHandler(handler, request, response, client);
 		
 		httpGetRequestHandler.execute();
 		

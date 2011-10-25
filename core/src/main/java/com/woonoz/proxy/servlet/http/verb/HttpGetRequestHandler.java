@@ -21,7 +21,6 @@
 package com.woonoz.proxy.servlet.http.verb;
 
 import java.net.URI;
-import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,12 +29,13 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 
-import com.woonoz.proxy.servlet.base.HttpRequestHandler;
+import com.woonoz.proxy.servlet.base.AbstractHttpRequestCommand;
+import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 
-public class HttpGetRequestHandler extends HttpRequestHandler {
+public class HttpGetRequestHandler extends AbstractHttpRequestCommand {
 
-	public HttpGetRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
-		super(request, response, targetServer, client);
+	public HttpGetRequestHandler(HttpRequestHandler httpRequestHandler, HttpServletRequest request, HttpServletResponse response, HttpClient client) {
+		super(httpRequestHandler, request, response, client);
 	}
 
 	@Override

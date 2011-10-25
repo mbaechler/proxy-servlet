@@ -26,12 +26,18 @@ import com.woonoz.proxy.servlet.http.header.HeadersFilter;
 import com.woonoz.proxy.servlet.url.UrlRewriter;
 
 
-class HttpEntityEnclosingHeadersHandler extends ClientHeadersHandler {
+public class HttpEntityEnclosingHeadersHandler extends ClientHeadersHandler {
 
 	public HttpEntityEnclosingHeadersHandler(UrlRewriter urlRewriter) {
 		super(urlRewriter, HeaderToSubstitute.values());
 	}
 	
+	public HttpEntityEnclosingHeadersHandler(UrlRewriter urlRewriter, Iterable<HeadersFilter> filters) {
+		super(urlRewriter, filters);
+	}
+
+
+
 	private enum HeaderToSubstitute implements HeadersFilter {
 		ContentType {
 			public String handleValue(String headerValue, UrlRewriter urlRewriter) throws URISyntaxException {

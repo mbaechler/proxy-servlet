@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,14 +44,14 @@ import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
 
+import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 import com.woonoz.proxy.servlet.http.exception.InvalidCookieException;
-import com.woonoz.proxy.servlet.url.UrlRewriter;
 import com.woonoz.stream.BufferOnCreateInputStream;
 
-public abstract class HttpEntityEnclosingRequestHandler extends HttpRequestHandler {
+public abstract class HttpEntityEnclosingRequestHandler extends AbstractHttpRequestCommand {
 
-	public HttpEntityEnclosingRequestHandler(HttpServletRequest request, HttpServletResponse response, URL targetServer, HttpClient client) {
-		super(request, response, targetServer, client);
+	public HttpEntityEnclosingRequestHandler(HttpRequestHandler httpRequestHandler, HttpServletRequest request, HttpServletResponse response, HttpClient client) {
+		super(httpRequestHandler, request, response, client);
 	}
 	
 	protected abstract HttpEntityEnclosingRequestBase createHttpRequestBase(URI targetUri);
@@ -66,8 +65,9 @@ public abstract class HttpEntityEnclosingRequestHandler extends HttpRequestHandl
 	}
 
 
-	protected ClientHeadersHandler createClientHeadersHandler(final UrlRewriter urlRewriter) {
-		return new HttpEntityEnclosingHeadersHandler(urlRewriter);
+	@Override
+	protected ClientHeadersHandler getClientHeadersHandler() {
+		return httpRequestHandler.getHttpEntityEnclosingClientHeadersHandler();
 	}
 	
 	private void copyData(HttpServletRequest request, HttpEntityEnclosingRequestBase httpEntityEnclosingRequestBase) throws FileUploadException, IOException {
