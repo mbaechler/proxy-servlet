@@ -22,6 +22,7 @@ package com.woonoz.proxy.servlet.http.header;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -34,6 +35,10 @@ public abstract class AbstractHeadersHandler {
 	final UrlRewriter urlRewriter;
 	
 	protected AbstractHeadersHandler(final UrlRewriter urlRewriter, HeadersFilter[] headersfilters) {
+		this(urlRewriter, Arrays.<HeadersFilter>asList(headersfilters));
+	}
+	
+	protected AbstractHeadersHandler(final UrlRewriter urlRewriter, Iterable<HeadersFilter> headersfilters) {
 		this.urlRewriter = urlRewriter;
 		headersToHandle = new HashMap<String, HeadersFilter>();
 		for (final HeadersFilter h: headersfilters) {

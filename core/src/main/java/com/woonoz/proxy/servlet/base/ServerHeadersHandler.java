@@ -27,8 +27,7 @@ import com.woonoz.proxy.servlet.http.header.AbstractHeadersHandler;
 import com.woonoz.proxy.servlet.http.header.HeadersFilter;
 import com.woonoz.proxy.servlet.url.UrlRewriter;
 
-
-class ServerHeadersHandler extends AbstractHeadersHandler {
+public class ServerHeadersHandler extends AbstractHeadersHandler {
 
 	public ServerHeadersHandler(UrlRewriter urlRewriter) {
 		super(urlRewriter, HeaderToSubstitute.values());

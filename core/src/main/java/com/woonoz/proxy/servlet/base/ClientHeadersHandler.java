@@ -22,30 +22,32 @@ package com.woonoz.proxy.servlet.base;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.woonoz.proxy.servlet.http.header.AbstractHeadersHandler;
 import com.woonoz.proxy.servlet.http.header.HeadersFilter;
 import com.woonoz.proxy.servlet.url.UrlRewriter;
 
 
-class ClientHeadersHandler extends AbstractHeadersHandler {
+public class ClientHeadersHandler extends AbstractHeadersHandler {
 
-	protected ClientHeadersHandler(UrlRewriter urlRewriter, HeadersFilter[] headersToSubstitute) {
-		super(urlRewriter, createHeadersArray(headersToSubstitute));
-	}
-	
-	private static HeadersFilter[] createHeadersArray(final HeadersFilter[] headersToSubstitute) {
-		ArrayList<HeadersFilter> headers = new ArrayList<HeadersFilter>();
-		headers.addAll(Arrays.asList(HeaderToSubstitute.values()));
-		headers.addAll(Arrays.asList(headersToSubstitute));
-		return headers.toArray(new HeadersFilter[0]);
-		
-	}
-	
 	public ClientHeadersHandler(UrlRewriter urlRewriter) {
-		super(urlRewriter, HeaderToSubstitute.values());
+		this(urlRewriter, ImmutableList.<HeadersFilter>of());
+	}
+	
+	protected ClientHeadersHandler(UrlRewriter urlRewriter, HeadersFilter[] filters) {
+		this(urlRewriter, Arrays.asList(filters));
+	}
+	
+	protected ClientHeadersHandler(UrlRewriter urlRewriter, Iterable<HeadersFilter> filters) {
+		super(urlRewriter, joinFilters(filters));
+	}
+	
+	private static Iterable<HeadersFilter> joinFilters(final Iterable<HeadersFilter> filters) {
+		Iterable<HeadersFilter> requiredFilters = Arrays.<HeadersFilter>asList(HeaderToSubstitute.values());
+		return Iterables.concat(requiredFilters, filters);
 	}
 	
 	private enum HeaderToSubstitute implements HeadersFilter {
