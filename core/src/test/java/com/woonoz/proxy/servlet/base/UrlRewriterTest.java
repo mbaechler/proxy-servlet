@@ -38,61 +38,51 @@ import com.woonoz.proxy.servlet.url.UrlRewriter;
 
 public class UrlRewriterTest {
 
-	private HttpServletRequest buildGoogleDotComServletRequest() {
+	private HttpServletRequest buildServletRequest(
+			String servletPath, String requestURI, String contextPath, 
+			String queryString, String serverName, int port) {
+		
 		HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getServletPath()).andReturn("/proxy").anyTimes();
-		EasyMock.expect(request.getRequestURI()).andReturn("/proxy").anyTimes();
-		EasyMock.expect(request.getContextPath()).andReturn("").anyTimes();
-		EasyMock.expect(request.getQueryString()).andReturn(null).anyTimes();
-		EasyMock.expect(request.getServerName()).andReturn("www.google.com").anyTimes();
-		EasyMock.expect(request.getServerPort()).andReturn(80).anyTimes();
+		EasyMock.expect(request.getServletPath()).andReturn(servletPath).anyTimes();
+		EasyMock.expect(request.getRequestURI()).andReturn(requestURI).anyTimes();
+		EasyMock.expect(request.getContextPath()).andReturn(contextPath).anyTimes();
+		EasyMock.expect(request.getQueryString()).andReturn(queryString).anyTimes();
+		EasyMock.expect(request.getServerName()).andReturn(serverName).anyTimes();
+		EasyMock.expect(request.getServerPort()).andReturn(port).anyTimes();
+		return request;
+	}
+
+	private HttpServletRequest buildGoogleDotComServletRequest() {
+		HttpServletRequest request = buildServletRequest("/proxy", "/proxy", "", null, "www.google.com", 80);
 		EasyMock.replay(request);
 		return request;
 	}
 
+	
 	private HttpServletRequest buildGoogleDotComOnPortHeightyServletRequest() {
-		HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getServletPath()).andReturn("/toto").anyTimes();
-		EasyMock.expect(request.getRequestURI()).andReturn("/toto").anyTimes();
-		EasyMock.expect(request.getContextPath()).andReturn("").anyTimes();
-		EasyMock.expect(request.getServerName()).andReturn("www.google.com").anyTimes();
-		EasyMock.expect(request.getServerPort()).andReturn(80).anyTimes();
+		HttpServletRequest request = buildServletRequest("/toto", "/toto", "", null, "www.google.com", 80);
 		EasyMock.replay(request);
 		return request;
 	}
 
 	private HttpServletRequest buildGoogleDotComOnPortFiftyFiveServletRequest() {
-		HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getQueryString()).andReturn(null).anyTimes();
-		EasyMock.expect(request.getServletPath()).andReturn("/proxy/").anyTimes();
-		EasyMock.expect(request.getRequestURI()).andReturn("/proxy/").anyTimes();
-		EasyMock.expect(request.getContextPath()).andReturn("").anyTimes();
-		EasyMock.expect(request.getServerName()).andReturn("www.google.com").anyTimes();
-		EasyMock.expect(request.getServerPort()).andReturn(55).anyTimes();
+		HttpServletRequest request = buildServletRequest("/proxy/", "/proxy/", "", null, "www.google.com", 55);
 		EasyMock.replay(request);
 		return request;
 	}
 
 	private HttpServletRequest buildRequestBug1() {
-		HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getServletPath()).andReturn("/com.woonoz.gwt.woonoz.Woonoz/proxy").anyTimes();
-		EasyMock.expect(request.getRequestURI()).andReturn("/wol-wnz-pro/com.woonoz.gwt.woonoz.Woonoz/proxy/gwt/AuthenticationServiceService").anyTimes();
-		EasyMock.expect(request.getContextPath()).andReturn("/wol-wnz-pro").anyTimes();
-		EasyMock.expect(request.getQueryString()).andReturn(null).anyTimes();
-		EasyMock.expect(request.getServerName()).andReturn("matthieu-test.woonoz.dev").anyTimes();
-		EasyMock.expect(request.getServerPort()).andReturn(8180).anyTimes();
+		HttpServletRequest request = buildServletRequest("/com.woonoz.gwt.woonoz.Woonoz/proxy", 
+				"/wol-wnz-pro/com.woonoz.gwt.woonoz.Woonoz/proxy/gwt/AuthenticationServiceService", 
+				"/wol-wnz-pro", null, "matthieu-test.woonoz.dev", 8180);
 		EasyMock.replay(request);
 		return request;
 	}
 
 	private HttpServletRequest buildRequestBug2() {
-		HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getServletPath()).andReturn("/com.woonoz.gwt.woonoz.Woonoz/proxy").anyTimes();
-		EasyMock.expect(request.getRequestURI()).andReturn("/wol-wnz-pro-2/com.woonoz.gwt.woonoz.Woonoz/proxy/gwt/AuthenticationServiceService").anyTimes();
-		EasyMock.expect(request.getContextPath()).andReturn("/wol-wnz-pro-2").anyTimes();
-		EasyMock.expect(request.getQueryString()).andReturn(null).anyTimes();
-		EasyMock.expect(request.getServerName()).andReturn("online.woonoz-pro.com").anyTimes();
-		EasyMock.expect(request.getServerPort()).andReturn(443).anyTimes();
+		HttpServletRequest request = buildServletRequest("/com.woonoz.gwt.woonoz.Woonoz/proxy", 
+				"/wol-wnz-pro-2/com.woonoz.gwt.woonoz.Woonoz/proxy/gwt/AuthenticationServiceService", 
+				"/wol-wnz-pro-2", null, "online.woonoz-pro.com", 443);
 		EasyMock.replay(request);
 		return request;
 	}
