@@ -29,7 +29,7 @@ import java.util.Map;
 
 import com.woonoz.proxy.servlet.url.UrlRewriter;
 
-public abstract class AbstractHeadersHandler {
+public abstract class AbstractHeadersHandler implements HeadersHandler {
 
 	final Map<String, HeadersFilter> headersToHandle; 
 	final UrlRewriter urlRewriter;
@@ -50,6 +50,7 @@ public abstract class AbstractHeadersHandler {
 		return input.toLowerCase(Locale.ENGLISH);
 	}
 
+	@Override
 	public String handleHeader(final String headerName, final String headerValue) throws URISyntaxException, MalformedURLException {
 		HeadersFilter handler = headersToHandle.get(toLower(headerName));
 		if (handler != null) {

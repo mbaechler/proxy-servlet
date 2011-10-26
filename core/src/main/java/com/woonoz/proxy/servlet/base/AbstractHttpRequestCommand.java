@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 import com.woonoz.proxy.servlet.http.exception.InvalidCookieException;
+import com.woonoz.proxy.servlet.http.header.HeadersHandler;
 import com.woonoz.proxy.servlet.url.UrlRewriter;
 
 public abstract class AbstractHttpRequestCommand {
@@ -68,7 +69,7 @@ public abstract class AbstractHttpRequestCommand {
 			throws URISyntaxException, InvalidCookieException,
 			MalformedURLException, FileUploadException, IOException {
 		HttpRequestBase httpRequestBase = createHttpRequestBase(targetUri);
-		copyHeaders(getRequest(), httpRequestBase, clientHeadersHandler);
+		copyRequestHeaders(getRequest(), httpRequestBase, clientHeadersHandler);
 		return httpRequestBase;
 	}
 	
@@ -123,28 +124,46 @@ public abstract class AbstractHttpRequestCommand {
 		return response;
 	}
 	
-	protected void copyHeaders(final HttpResponse from, final HttpServletResponse to, ServerHeadersHandler serverHeadersHandler) throws URISyntaxException, MalformedURLException{
+	protected void copyResponseHeaders(final HttpResponse from, final HttpServletResponse to, ServerHeadersHandler serverHeadersHandler) throws URISyntaxException, MalformedURLException{
 		for (final Header header: from.getAllHeaders()) {
-			final String modifiedValue = serverHeadersHandler.handleHeader(header.getName(), header.getValue());
-			if (modifiedValue != null) {
-				to.addHeader(header.getName(), modifiedValue);
-			}
+			final String modifiedValue = filterHeaderValue(serverHeadersHandler, header.getName(), header.getValue());
+			copyHeaderIntoForwardedResponse(to, header, modifiedValue);
+		}
+	}
+
+	private void copyHeaderIntoForwardedResponse(final HttpServletResponse to,
+			final Header header, final String modifiedValue) {
+		if (modifiedValue != null) {
+			to.addHeader(header.getName(), modifiedValue);
 		}
 	}
 	
-	protected void copyHeaders(final HttpServletRequest from, final HttpRequestBase to, ClientHeadersHandler clientHeadersHandler) throws URISyntaxException, MalformedURLException {
+	protected void copyRequestHeaders(final HttpServletRequest from, final HttpRequestBase to, ClientHeadersHandler clientHeadersHandler) throws URISyntaxException, MalformedURLException {
 		Enumeration<?> enumerationOfHeaderNames = from.getHeaderNames();
         while (enumerationOfHeaderNames.hasMoreElements()) {
             final String headerName = (String)enumerationOfHeaderNames.nextElement();
+            
             Enumeration<?> enumerationOfHeaderValues = from.getHeaders(headerName);
             while (enumerationOfHeaderValues.hasMoreElements()) {
             	final String headerValue = (String) enumerationOfHeaderValues.nextElement();
-                final String modifiedValue = clientHeadersHandler.handleHeader(headerName, headerValue);
-                if (modifiedValue != null) {
-                	to.addHeader(headerName, modifiedValue);
-                }
+                final String filteredValue = filterHeaderValue(clientHeadersHandler, headerName, headerValue);
+                copyHeaderInForwardedRequest(to, headerName, filteredValue);
             }
         }
+	}
+
+	private String filterHeaderValue(HeadersHandler filter, final String headerName,
+			final String headerValue) throws URISyntaxException, MalformedURLException {
+		
+		final String filteredValue = filter.handleHeader(headerName, headerValue);
+		return filteredValue;
+	}
+
+	private void copyHeaderInForwardedRequest(final HttpRequestBase to,
+			final String headerName, final String modifiedValue) {
+		if (modifiedValue != null) {
+			to.addHeader(headerName, modifiedValue);
+		}
 	}
 
 	private void performHttpRequest(HttpRequestBase requestToServer, HttpServletResponse responseToClient, ServerHeadersHandler serverHeadersHandler) throws IOException, URISyntaxException {
@@ -153,7 +172,7 @@ public abstract class AbstractHttpRequestCommand {
 		HttpResponse responseFromServer = client.execute(requestToServer, context);
 		logger.debug("Performed request: {} --> {}", requestToServer.getRequestLine(), responseFromServer.getStatusLine());				
 		responseToClient.setStatus(responseFromServer.getStatusLine().getStatusCode());
-		copyHeaders(responseFromServer, responseToClient, serverHeadersHandler);
+		copyResponseHeaders(responseFromServer, responseToClient, serverHeadersHandler);
 		HttpEntity entity = responseFromServer.getEntity();
 		if (entity != null) {
 			try {

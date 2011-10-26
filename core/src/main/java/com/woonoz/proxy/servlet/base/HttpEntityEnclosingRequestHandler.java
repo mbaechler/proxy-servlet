@@ -59,7 +59,7 @@ public abstract class HttpEntityEnclosingRequestHandler extends AbstractHttpRequ
 	@Override
 	protected HttpEntityEnclosingRequestBase createHttpCommand(URI targetUri, ClientHeadersHandler clientHeadersHandler) throws InvalidCookieException, URISyntaxException, FileUploadException, IOException {
 		HttpEntityEnclosingRequestBase httpEntityEnclosingRequestBase = createHttpRequestBase(targetUri);
-		copyHeaders(getRequest(), httpEntityEnclosingRequestBase, clientHeadersHandler);
+		copyRequestHeaders(getRequest(), httpEntityEnclosingRequestBase, clientHeadersHandler);
 		copyData(getRequest(), httpEntityEnclosingRequestBase);
 		return httpEntityEnclosingRequestBase;
 	}

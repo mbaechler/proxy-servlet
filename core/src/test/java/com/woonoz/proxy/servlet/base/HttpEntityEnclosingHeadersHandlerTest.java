@@ -28,7 +28,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.woonoz.proxy.servlet.base.HttpEntityEnclosingHeadersHandler;
-import com.woonoz.proxy.servlet.http.header.AbstractHeadersHandler;
+import com.woonoz.proxy.servlet.http.header.HeadersHandler;
 import com.woonoz.proxy.servlet.url.UrlRewriter;
 
 public class HttpEntityEnclosingHeadersHandlerTest {
@@ -38,7 +38,7 @@ public class HttpEntityEnclosingHeadersHandlerTest {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		String fromGoogle = "http://www.google.com/";
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
+		HeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
 		String actualValue = handler.handleHeader("Referer", fromGoogle);
 		Assert.assertEquals(null, actualValue);
 		EasyMock.verify(rewriter);
@@ -51,7 +51,7 @@ public class HttpEntityEnclosingHeadersHandlerTest {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.expect(rewriter.rewriteHost(host)).andReturn(expectedRewritedHost);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
+		HeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
 		String actualValue = handler.handleHeader("Host", host);
 		Assert.assertEquals(expectedRewritedHost, actualValue);
 		EasyMock.verify(rewriter);
@@ -61,7 +61,7 @@ public class HttpEntityEnclosingHeadersHandlerTest {
 	public void testContentType() throws URISyntaxException, MalformedURLException {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
+		HeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
 		String headerValue = "text/xml";
 		String actualValue = handler.handleHeader("Content-Type", headerValue);
 		Assert.assertEquals(headerValue, actualValue);
@@ -75,7 +75,7 @@ public class HttpEntityEnclosingHeadersHandlerTest {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.expect(rewriter.rewriteHost(host)).andReturn(expectedRewritedHost);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
+		HeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
 		String actualValue = handler.handleHeader("HoST", host);
 		Assert.assertEquals(expectedRewritedHost, actualValue);
 		EasyMock.verify(rewriter);
@@ -85,7 +85,7 @@ public class HttpEntityEnclosingHeadersHandlerTest {
 	public void testContentLenght() throws URISyntaxException, MalformedURLException {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
+		HeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
 		String headerValue = "46546";
 		String actualValue = handler.handleHeader("Content-Length", headerValue);
 		Assert.assertEquals(null, actualValue);
@@ -96,7 +96,7 @@ public class HttpEntityEnclosingHeadersHandlerTest {
 	public void testContentTypeMultipart() throws URISyntaxException, MalformedURLException {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
+		HeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
 		String headerValue = "multipart/form-data";
 		String actualValue = handler.handleHeader("Content-type", headerValue);
 		Assert.assertEquals(null, actualValue);
@@ -107,7 +107,7 @@ public class HttpEntityEnclosingHeadersHandlerTest {
 	public void testContentTypeNeutral() throws URISyntaxException, MalformedURLException {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
+		HeadersHandler handler = new HttpEntityEnclosingHeadersHandler(rewriter);
 		String headerValue = "binary";
 		String actualValue = handler.handleHeader("Content-type", headerValue);
 		Assert.assertEquals(headerValue, actualValue);

@@ -28,7 +28,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.woonoz.proxy.servlet.base.ClientHeadersHandler;
-import com.woonoz.proxy.servlet.http.header.AbstractHeadersHandler;
+import com.woonoz.proxy.servlet.http.header.HeadersHandler;
 import com.woonoz.proxy.servlet.url.UrlRewriter;
 
 public class ClientHeadersHandlerTest {
@@ -38,7 +38,7 @@ public class ClientHeadersHandlerTest {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		String fromGoogle = "http://www.google.com/";
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new ClientHeadersHandler(rewriter);
+		HeadersHandler handler = new ClientHeadersHandler(rewriter);
 		String actualValue = handler.handleHeader("Referer", fromGoogle);
 		Assert.assertEquals(null, actualValue);
 		EasyMock.verify(rewriter);
@@ -51,7 +51,7 @@ public class ClientHeadersHandlerTest {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.expect(rewriter.rewriteHost(host)).andReturn(expectedRewritedHost);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new ClientHeadersHandler(rewriter);
+		HeadersHandler handler = new ClientHeadersHandler(rewriter);
 		String actualValue = handler.handleHeader("Host", host);
 		Assert.assertEquals(expectedRewritedHost, actualValue);
 		EasyMock.verify(rewriter);
@@ -61,7 +61,7 @@ public class ClientHeadersHandlerTest {
 	public void testContentType() throws URISyntaxException, MalformedURLException {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new ClientHeadersHandler(rewriter);
+		HeadersHandler handler = new ClientHeadersHandler(rewriter);
 		String headerValue = "text/xml";
 		String actualValue = handler.handleHeader("Content-Type", headerValue);
 		Assert.assertEquals(headerValue, actualValue);
@@ -75,7 +75,7 @@ public class ClientHeadersHandlerTest {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.expect(rewriter.rewriteHost(host)).andReturn(expectedRewritedHost);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new ClientHeadersHandler(rewriter);
+		HeadersHandler handler = new ClientHeadersHandler(rewriter);
 		String actualValue = handler.handleHeader("HoST", host);
 		Assert.assertEquals(expectedRewritedHost, actualValue);
 		EasyMock.verify(rewriter);
@@ -85,7 +85,7 @@ public class ClientHeadersHandlerTest {
 	public void testContentLenght() throws URISyntaxException, MalformedURLException {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new ClientHeadersHandler(rewriter);
+		HeadersHandler handler = new ClientHeadersHandler(rewriter);
 		String headerValue = "46546";
 		String actualValue = handler.handleHeader("Content-Length", headerValue);
 		Assert.assertEquals(null, actualValue);
@@ -96,7 +96,7 @@ public class ClientHeadersHandlerTest {
 	public void testContentTypeMultipart() throws URISyntaxException, MalformedURLException {
 		UrlRewriter rewriter = EasyMock.createMock(UrlRewriter.class);
 		EasyMock.replay(rewriter);
-		AbstractHeadersHandler handler = new ClientHeadersHandler(rewriter);
+		HeadersHandler handler = new ClientHeadersHandler(rewriter);
 		String headerValue = "multipart/form-data";
 		String actualValue = handler.handleHeader("Content-type", headerValue);
 		Assert.assertEquals(headerValue, actualValue);
