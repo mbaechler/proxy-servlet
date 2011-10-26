@@ -64,12 +64,12 @@ public abstract class AbstractHttpRequestCommand {
 	
 	protected abstract HttpRequestBase createHttpRequestBase(URI targetUri);
 	
-	protected HttpRequestBase createHttpCommand(final URI targetUri,
-			ClientHeadersHandler clientHeadersHandler)
+	protected HttpRequestBase createHttpCommand(final URI targetUri)
 			throws URISyntaxException, InvalidCookieException,
 			MalformedURLException, FileUploadException, IOException {
+		HeadersHandler headersHandler = getClientHeadersHandler();
 		HttpRequestBase httpRequestBase = createHttpRequestBase(targetUri);
-		copyRequestHeaders(getRequest(), httpRequestBase, clientHeadersHandler);
+		copyRequestHeaders(getRequest(), httpRequestBase, headersHandler);
 		return httpRequestBase;
 	}
 	
@@ -78,17 +78,16 @@ public abstract class AbstractHttpRequestCommand {
 	}
 	
 	public void execute() {
-		ClientHeadersHandler clientHeadersHandler = getClientHeadersHandler();
-		ServerHeadersHandler serverHeadersHandler = httpRequestHandler.getServerHeadersHandler();
 		UrlRewriter urlRewriter = httpRequestHandler.getUrlRewriter();
 		HttpRequestBase httpCommand = null;
 		try {
 			logger.debug("Doing rewrite for uri: {}", request.getRequestURL());
 			final URI targetUri = urlRewriter.rewriteUri(new URI(request.getRequestURL().toString()));
 			logger.debug("Making request for rewritten uri: {}", targetUri);
-			httpCommand = createHttpCommand(targetUri, clientHeadersHandler);
+			httpCommand = createHttpCommand(targetUri);
 			logger.debug("Http client command: {}, headers: {}", httpCommand.getRequestLine(), Arrays.asList(httpCommand.getAllHeaders()));
-			performHttpRequest(httpCommand, response, serverHeadersHandler);
+			performHttpRequest(httpCommand, response);
+			
 		} catch (URISyntaxException e) {
 			handleException(httpCommand, e);
 		} catch (IOException e) {
@@ -124,9 +123,12 @@ public abstract class AbstractHttpRequestCommand {
 		return response;
 	}
 	
-	protected void copyResponseHeaders(final HttpResponse from, final HttpServletResponse to, ServerHeadersHandler serverHeadersHandler) throws URISyntaxException, MalformedURLException{
+	protected void copyResponseHeaders(
+			final HttpResponse from, final HttpServletResponse to, HeadersHandler filter) 
+					throws URISyntaxException, MalformedURLException {
+		
 		for (final Header header: from.getAllHeaders()) {
-			final String modifiedValue = filterHeaderValue(serverHeadersHandler, header.getName(), header.getValue());
+			final String modifiedValue = filterHeaderValue(filter, header.getName(), header.getValue());
 			copyHeaderIntoForwardedResponse(to, header, modifiedValue);
 		}
 	}
@@ -138,7 +140,10 @@ public abstract class AbstractHttpRequestCommand {
 		}
 	}
 	
-	protected void copyRequestHeaders(final HttpServletRequest from, final HttpRequestBase to, ClientHeadersHandler clientHeadersHandler) throws URISyntaxException, MalformedURLException {
+	protected void copyRequestHeaders(
+			final HttpServletRequest from, final HttpRequestBase to, HeadersHandler clientHeadersHandler)
+					throws URISyntaxException, MalformedURLException {
+		
 		Enumeration<?> enumerationOfHeaderNames = from.getHeaderNames();
         while (enumerationOfHeaderNames.hasMoreElements()) {
             final String headerName = (String)enumerationOfHeaderNames.nextElement();
@@ -166,13 +171,16 @@ public abstract class AbstractHttpRequestCommand {
 		}
 	}
 
-	private void performHttpRequest(HttpRequestBase requestToServer, HttpServletResponse responseToClient, ServerHeadersHandler serverHeadersHandler) throws IOException, URISyntaxException {
+	private void performHttpRequest(HttpRequestBase requestToServer, HttpServletResponse responseToClient) throws IOException, URISyntaxException {
+		
+		HeadersHandler headersHandler = httpRequestHandler.getServerHeadersHandler();
+		
 		HttpContext context = new BasicHttpContext();
 		context.setAttribute(AbstractHttpRequestCommand.class.getName(), this);
 		HttpResponse responseFromServer = client.execute(requestToServer, context);
 		logger.debug("Performed request: {} --> {}", requestToServer.getRequestLine(), responseFromServer.getStatusLine());				
 		responseToClient.setStatus(responseFromServer.getStatusLine().getStatusCode());
-		copyResponseHeaders(responseFromServer, responseToClient, serverHeadersHandler);
+		copyResponseHeaders(responseFromServer, responseToClient, headersHandler);
 		HttpEntity entity = responseFromServer.getEntity();
 		if (entity != null) {
 			try {

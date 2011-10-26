@@ -46,6 +46,7 @@ import org.apache.http.entity.mime.content.StringBody;
 
 import com.woonoz.proxy.servlet.http.HttpRequestHandler;
 import com.woonoz.proxy.servlet.http.exception.InvalidCookieException;
+import com.woonoz.proxy.servlet.http.header.HeadersHandler;
 import com.woonoz.stream.BufferOnCreateInputStream;
 
 public abstract class HttpEntityEnclosingRequestHandler extends AbstractHttpRequestCommand {
@@ -57,9 +58,10 @@ public abstract class HttpEntityEnclosingRequestHandler extends AbstractHttpRequ
 	protected abstract HttpEntityEnclosingRequestBase createHttpRequestBase(URI targetUri);
 
 	@Override
-	protected HttpEntityEnclosingRequestBase createHttpCommand(URI targetUri, ClientHeadersHandler clientHeadersHandler) throws InvalidCookieException, URISyntaxException, FileUploadException, IOException {
+	protected HttpEntityEnclosingRequestBase createHttpCommand(URI targetUri) throws InvalidCookieException, URISyntaxException, FileUploadException, IOException {
+		HeadersHandler headersHandler = getClientHeadersHandler();
 		HttpEntityEnclosingRequestBase httpEntityEnclosingRequestBase = createHttpRequestBase(targetUri);
-		copyRequestHeaders(getRequest(), httpEntityEnclosingRequestBase, clientHeadersHandler);
+		copyRequestHeaders(getRequest(), httpEntityEnclosingRequestBase, headersHandler);
 		copyData(getRequest(), httpEntityEnclosingRequestBase);
 		return httpEntityEnclosingRequestBase;
 	}
