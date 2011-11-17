@@ -1,6 +1,5 @@
 package com.woonoz.proxy.servlet;
 
-import java.net.URL;
 import java.util.Arrays;
 
 import com.google.inject.AbstractModule;
@@ -10,18 +9,18 @@ import com.woonoz.proxy.servlet.http.header.HeadersFilter;
 
 public class SimpleGuiceProxyServletModule extends AbstractModule {
 
-	private final URL targetUrl;
 	private final Iterable<Class<? extends HeadersFilter>> headersFilters;
+	private final ProxyServletConfig proxyServletConfig;
 
-	public SimpleGuiceProxyServletModule(URL targetUrl, 
+	public SimpleGuiceProxyServletModule(ProxyServletConfig proxyServletConfig, 
 			Class<? extends HeadersFilter>... headersFilters) {
-		this(targetUrl, Arrays.asList(headersFilters));
+		this(proxyServletConfig, Arrays.asList(headersFilters));
 	}
 	
-	public SimpleGuiceProxyServletModule(URL targetUrl, 
+	public SimpleGuiceProxyServletModule(ProxyServletConfig proxyServletConfig, 
 			Iterable<Class<? extends HeadersFilter>> headersFilters) {
 		super();
-		this.targetUrl = targetUrl;
+		this.proxyServletConfig = proxyServletConfig;
 		this.headersFilters = headersFilters;
 	}
 	
@@ -33,7 +32,7 @@ public class SimpleGuiceProxyServletModule extends AbstractModule {
 	}
 
 	private void defineProxyTarget() {
-		bind(ProxyServletConfig.class).toInstance(new ProxyServletConfig(targetUrl));
+		bind(ProxyServletConfig.class).toInstance(proxyServletConfig);
 	}
 
 	private void defineHeadersFilters() {

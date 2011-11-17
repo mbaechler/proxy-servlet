@@ -9,6 +9,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
+import com.woonoz.proxy.servlet.config.ProxyServletConfig;
 import com.woonoz.proxy.servlet.http.header.HeadersFilter;
 
 public class GuiceServletConfig extends GuiceServletContextListener {
@@ -24,7 +25,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
 	@Override
 	protected Injector getInjector() {
 		return Guice.createInjector(
-				new SimpleGuiceProxyServletModule(targetUrl, filters),
+				new SimpleGuiceProxyServletModule(new ProxyServletConfig(targetUrl), filters),
 				new ServletModule() {
 			@Override
 			protected void configureServlets() {
