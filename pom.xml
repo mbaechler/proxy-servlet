@@ -39,6 +39,7 @@
 	<modules>
 	  <module>core</module>
 	  <module>guice-extension-loader</module>
+	  <module>exchange-active-sync-proxy</module>
 	</modules>
 
 	<dependencyManagement>
