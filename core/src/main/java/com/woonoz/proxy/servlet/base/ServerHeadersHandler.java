@@ -22,7 +22,10 @@ package com.woonoz.proxy.servlet.base;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.woonoz.proxy.servlet.http.header.AbstractHeadersHandler;
 import com.woonoz.proxy.servlet.http.header.HeadersFilter;
 import com.woonoz.proxy.servlet.url.UrlRewriter;
@@ -30,7 +33,16 @@ import com.woonoz.proxy.servlet.url.UrlRewriter;
 public class ServerHeadersHandler extends AbstractHeadersHandler {
 
 	public ServerHeadersHandler(UrlRewriter urlRewriter) {
-		super(urlRewriter, RequiredHeaders.values());
+		super(urlRewriter, ImmutableList.<HeadersFilter>of());
+	}
+	
+	public ServerHeadersHandler(UrlRewriter urlRewriter, Iterable<HeadersFilter> filters) {
+		super(urlRewriter, joinFilters(filters));
+	}
+	
+	private static Iterable<HeadersFilter> joinFilters(final Iterable<HeadersFilter> filters) {
+		Iterable<HeadersFilter> requiredFilters = Arrays.<HeadersFilter>asList(RequiredHeaders.values());
+		return Iterables.concat(requiredFilters, filters);
 	}
 	
 	private enum RequiredHeaders implements HeadersFilter {

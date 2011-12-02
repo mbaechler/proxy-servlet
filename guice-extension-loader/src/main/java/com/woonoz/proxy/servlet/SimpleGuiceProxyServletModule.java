@@ -1,46 +1,57 @@
 package com.woonoz.proxy.servlet;
 
-import java.util.Arrays;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 import com.woonoz.proxy.servlet.config.ProxyServletConfig;
 import com.woonoz.proxy.servlet.http.header.HeadersFilter;
 
 public class SimpleGuiceProxyServletModule extends AbstractModule {
 
-	private final Iterable<Class<? extends HeadersFilter>> headersFilters;
+	private final Iterable<Class<? extends HeadersFilter>> clientHeadersFilters;
+	private final Iterable<Class<? extends HeadersFilter>> serverHeadersFilters;
 	private final ProxyServletConfig proxyServletConfig;
 
-	public SimpleGuiceProxyServletModule(ProxyServletConfig proxyServletConfig, 
-			Class<? extends HeadersFilter>... headersFilters) {
-		this(proxyServletConfig, Arrays.asList(headersFilters));
-	}
 	
 	public SimpleGuiceProxyServletModule(ProxyServletConfig proxyServletConfig, 
-			Iterable<Class<? extends HeadersFilter>> headersFilters) {
+			Iterable<Class<? extends HeadersFilter>> clientHeadersFilters,
+			Iterable<Class<? extends HeadersFilter>> serverHeadersFilters) {
 		super();
 		this.proxyServletConfig = proxyServletConfig;
-		this.headersFilters = headersFilters;
+		this.clientHeadersFilters = clientHeadersFilters;
+		this.serverHeadersFilters = serverHeadersFilters;
 	}
 	
 	@Override
 	protected void configure() {
 		install(new ProxyServletModule());
 		defineProxyTarget();
-		defineHeadersFilters();
+		defineClientHeadersFilters();
+		defineServerHeadersFilters();
 	}
 
 	private void defineProxyTarget() {
 		bind(ProxyServletConfig.class).toInstance(proxyServletConfig);
 	}
 
-	private void defineHeadersFilters() {
-		Multibinder<HeadersFilter> headersFiltersBinder = 
-				Multibinder.newSetBinder(binder(), HeadersFilter.class);
-		
+	private void defineClientHeadersFilters() {
+		Multibinder<HeadersFilter> clientHeadersFiltersBinder = newNamedSetBinder("clientFilters");
+		setHeadersFiltersBinding(clientHeadersFiltersBinder, clientHeadersFilters);
+	}
+	
+	private void defineServerHeadersFilters() {
+		Multibinder<HeadersFilter> serverHeadersFiltersBinder =  newNamedSetBinder("serverFilters");
+		setHeadersFiltersBinding(serverHeadersFiltersBinder, serverHeadersFilters);
+	}
+
+	private void setHeadersFiltersBinding(Multibinder<HeadersFilter> binder,
+			Iterable<Class<? extends HeadersFilter>> headersFilters) {
 		for (Class<? extends HeadersFilter> filter: headersFilters) {
-			headersFiltersBinder.addBinding().to(filter);
+			binder.addBinding().to(filter);
 		}
+	}
+
+	private Multibinder<HeadersFilter> newNamedSetBinder(String name) {
+		return Multibinder.newSetBinder(binder(), HeadersFilter.class, Names.named(name));
 	}
 }
