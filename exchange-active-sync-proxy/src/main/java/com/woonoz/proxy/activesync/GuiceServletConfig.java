@@ -18,19 +18,21 @@ import com.woonoz.proxy.servlet.http.header.HeadersFilter;
 public class GuiceServletConfig extends GuiceServletContextListener {
 
 	private URL targetUrl;
-	private List<Class<? extends HeadersFilter>> filters;
+	private List<Class<? extends HeadersFilter>> clientFilters;
+	private List<Class<? extends HeadersFilter>> serverFilters;
 	private ProxyServletConfig proxyServletConfig;
 
 	public GuiceServletConfig() throws MalformedURLException {
 		targetUrl = new URL("http://10.69.0.62/");
 		proxyServletConfig = new ProxyServletConfig(targetUrl, 10, 1000000, 1000000);
-		filters = Arrays.<Class<? extends HeadersFilter>>asList(EAS12Point1.class);
+		clientFilters = Arrays.<Class<? extends HeadersFilter>>asList(EAS12Point1.class);
+		serverFilters = Arrays.<Class<? extends HeadersFilter>>asList(ServerAS12Point1.class);
 	}
 	
 	@Override
 	protected Injector getInjector() {
 		return Guice.createInjector(
-				new SimpleGuiceProxyServletModule(proxyServletConfig, filters),
+				new SimpleGuiceProxyServletModule(proxyServletConfig, clientFilters, serverFilters),
 				new ServletModule() {
 			@Override
 			protected void configureServlets() {
