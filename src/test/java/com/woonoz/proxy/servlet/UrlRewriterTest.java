@@ -227,7 +227,7 @@ public class UrlRewriterTest {
 		URL redirectUrl = buildRedirectUrlRoot();
 		UrlRewriter rewriter = new UrlRewriterImpl(request, redirectUrl);
 		URI uri = new URI("http://www.google.com/proxy/doc/from/root/index.html");
-		URI expectedUri = new URI("http://localhost:8180/proxy/doc/from/root/index.html");
+		URI expectedUri = new URI("http://localhost:8180/doc/from/root/index.html");
 		Assert.assertEquals(expectedUri, rewriter.rewriteUri(uri));
 		EasyMock.verify(request);
 	}
@@ -318,4 +318,27 @@ public class UrlRewriterTest {
 		EasyMock.verify(request);
 	}
 
+	private HttpServletRequest buildRequestGithubIssue10() {
+		HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+		EasyMock.expect(request.getServletPath()).andReturn("/").anyTimes();
+		EasyMock.expect(request.getRequestURI()).andReturn("/test-proxy/").anyTimes();
+		EasyMock.expect(request.getContextPath()).andReturn("/test-proxy").anyTimes();
+		EasyMock.expect(request.getQueryString()).andReturn(null).anyTimes();
+		EasyMock.expect(request.getServerName()).andReturn("localhost").anyTimes();
+		EasyMock.expect(request.getServerPort()).andReturn(8080).anyTimes();
+		EasyMock.replay(request);
+		return request;
+	}
+	
+	@Test
+	public void testRewriteUriGithubIssue10() throws MalformedURLException, URISyntaxException {
+		HttpServletRequest request = buildRequestGithubIssue10();
+		URL redirectUrl = new URL("http://www.programme-tv.net");
+		UrlRewriter rewriter = new UrlRewriterImpl(request, redirectUrl);
+		URI requestUri = new URI("http://localhost:8080/test-proxy/");
+		URI expectedUri = new URI("http://www.programme-tv.net/");
+		Assert.assertEquals(expectedUri, rewriter.rewriteUri(requestUri));
+		EasyMock.verify(request);
+	}
+	
 }

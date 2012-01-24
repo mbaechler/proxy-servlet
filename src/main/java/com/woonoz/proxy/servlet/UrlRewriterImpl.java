@@ -96,8 +96,12 @@ public class UrlRewriterImpl implements UrlRewriter {
 	
 	private String rewritePathIfNeeded(String requestedPath) {
 		String servletURI = servletRequest.getContextPath() + servletRequest.getServletPath();
-		if (!targetServer.getPath().isEmpty() && requestIsSubpathOfServlet(requestedPath)) {
-			return appendPathFragments(targetServer.getPath(), requestedPath.substring(servletURI.length()));
+		if (requestIsSubpathOfServlet(requestedPath)) {
+			if (!targetServer.getPath().isEmpty()) {
+				return appendPathFragments(targetServer.getPath(), requestedPath.substring(servletURI.length()));
+			} else {
+				return requestedPath.substring(servletURI.length());
+			}
 		} else {
 			return requestedPath;
 		}
