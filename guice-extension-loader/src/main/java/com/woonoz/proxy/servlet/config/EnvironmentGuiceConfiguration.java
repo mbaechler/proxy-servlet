@@ -7,7 +7,7 @@ import com.google.common.base.Strings;
 
 public class EnvironmentGuiceConfiguration extends ProxyServletConfig {
 
-	private static final String CONFIGURATION_TARGET_KEY = "exchangeServerUrl";
+	private static final String CONFIGURATION_TARGET_KEY = "targetServerUrl";
 
     public EnvironmentGuiceConfiguration(int maxConnections, int connectionTimeout, int socketTimeout ) {
     	super(envTargetUrl(), maxConnections, connectionTimeout, socketTimeout);
@@ -18,7 +18,7 @@ public class EnvironmentGuiceConfiguration extends ProxyServletConfig {
 		if (!Strings.isNullOrEmpty(targetUrl)) {
 			return createURL(targetUrl);
 		}
-		return null;
+		throw new ConfigurationException("A property isn't properly set: " + CONFIGURATION_TARGET_KEY);
 	}
 
 	private static URL createURL(String targetUrl) {
