@@ -36,7 +36,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HttpContext;
@@ -73,7 +73,7 @@ public class ProxyServlet extends HttpServlet {
             BasicHttpParams httpParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout( httpParams, config.getConnectionTimeout() );
             HttpConnectionParams.setSoTimeout( httpParams, config.getSocketTimeout() );
-            ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(schemeRegistry);
+            PoolingClientConnectionManager cm = new PoolingClientConnectionManager(schemeRegistry);
             cm.setDefaultMaxPerRoute( config.getMaxConnections() );
             cm.setMaxTotal( config.getMaxConnections() );
             client = new DefaultHttpClient(cm, httpParams);

@@ -30,7 +30,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.http.client.utils.URIUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.MalformedCookieException;
@@ -60,8 +60,13 @@ public class UrlRewriterImpl implements UrlRewriter {
 	public URI rewriteUri(URI url) throws URISyntaxException, MalformedURLException {
 		if (requestedUrlPointsToServlet(url)) {
 			final String targetPath = rewritePathIfNeeded(url.getPath());
-			return URIUtils.createURI(targetServer.getProtocol(), targetServer.getHost(), 
-					targetServer.getPort(), targetPath, servletRequest.getQueryString(), null);
+			return new URIBuilder()
+				.setScheme(targetServer.getProtocol())
+				.setHost(targetServer.getHost())
+				.setPort(targetServer.getPort())
+				.setPath(targetPath)
+				.setQuery(servletRequest.getQueryString())
+				.build();
 		} else {
 			return url;
 		}

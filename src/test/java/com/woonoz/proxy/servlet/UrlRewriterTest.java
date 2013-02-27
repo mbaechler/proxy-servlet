@@ -27,7 +27,7 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -336,7 +336,7 @@ public class UrlRewriterTest {
 		URL redirectUrl = new URL("http://www.programme-tv.net");
 		UrlRewriter rewriter = new UrlRewriterImpl(request, redirectUrl);
 		URI requestUri = new URI("http://localhost:8080/test-proxy/");
-		URI expectedUri = new URI("http://www.programme-tv.net/");
+		URI expectedUri = new URI("http://www.programme-tv.net");
 		Assert.assertEquals(expectedUri, rewriter.rewriteUri(requestUri));
 		EasyMock.verify(request);
 	}
