@@ -203,12 +203,13 @@ public class UrlRewriterImpl implements UrlRewriter {
 	}
 
 	/**
-	 * Get request's servlet URI encoded, based on {@link HttpServletRequest#getContextPath()} which
-	 * is encoded, {@link HttpServletRequest#getRequestURI()} and
-	 * {@link HttpServletRequest#getServletPath()} which is decoded. We cannot just concatenate
+	 * Get request's servlet URI encoded, based on results from {@link HttpServletRequest#getContextPath()}
+	 * and {@link HttpServletRequest#getRequestURI()} which are both encoded URI/path, and
+	 * {@link HttpServletRequest#getServletPath()} which is DECODED path. We cannot just concatenate
 	 * context path and servlet path to get the proper result because of these encoding/decoding
-	 * differences, especially if the Servlet path contains special/reserved/non-ASCII characters
-	 * that require encoding.
+	 * differences, especially if the Servlet path contains encoded characters.
+	 * @param request 
+	 * @return servlet URI (meant to be equivalent to contextPath + URLEncoded(servletPath))
 	 * 
 	 */
 	public static String getEncodedServletURI(HttpServletRequest request)
@@ -240,19 +241,19 @@ public class UrlRewriterImpl implements UrlRewriter {
 				 * New path fragment found in servletPath Add all chars in corresponding (encoded)
 				 * path fragment from requestURI
 				 */
-				requestUriCharIndex = appendPathFragment(requestUriChars, requestUriCharIndex, servletURI);
+				requestUriCharIndex = copyPathFragment(requestUriChars, requestUriCharIndex, servletURI);
 				servletURI.append('/');
 				requestUriCharIndex += 1;
 			}
 		}
 
 		// Add remaining characters
-		requestUriCharIndex = appendPathFragment(requestUriChars, requestUriCharIndex, servletURI);
+		requestUriCharIndex = copyPathFragment(requestUriChars, requestUriCharIndex, servletURI);
 		return servletURI.toString();
 	}
 
 	/**
-	 * Append path fragment
+	 * Copy path fragment
 	 * 
 	 * @param input
 	 *            input string
@@ -262,7 +263,7 @@ public class UrlRewriterImpl implements UrlRewriter {
 	 *            where path fragments are appended
 	 * @return last character in fragment + 1
 	 */
-	private static int appendPathFragment(char[] input, int beginIndex, StringBuilder output)
+	private static int copyPathFragment(char[] input, int beginIndex, StringBuilder output)
 	{
 		int inputCharIndex = beginIndex;
 		while (inputCharIndex < input.length)
