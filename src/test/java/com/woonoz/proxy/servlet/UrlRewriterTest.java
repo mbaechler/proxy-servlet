@@ -40,9 +40,12 @@ public class UrlRewriterTest {
 
 	private HttpServletRequest buildGoogleDotComServletRequest() {
 		HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getServletPath()).andReturn("/proxy").anyTimes();
+		/*
+		 *  The servlet used to process this request was matched using the "/*" pattern (see javadoc of HttpServletRequest#getServletPath())
+		 */
+		EasyMock.expect(request.getServletPath()).andReturn("").anyTimes();
 		EasyMock.expect(request.getRequestURI()).andReturn("/proxy").anyTimes();
-		EasyMock.expect(request.getContextPath()).andReturn("").anyTimes();
+		EasyMock.expect(request.getContextPath()).andReturn("/proxy").anyTimes();
 		EasyMock.expect(request.getQueryString()).andReturn(null).anyTimes();
 		EasyMock.expect(request.getServerName()).andReturn("www.google.com").anyTimes();
 		EasyMock.expect(request.getServerPort()).andReturn(80).anyTimes();
@@ -340,5 +343,36 @@ public class UrlRewriterTest {
 		Assert.assertEquals(expectedUri, rewriter.rewriteUri(requestUri));
 		EasyMock.verify(request);
 	}
-	
+
+	private static HttpServletRequest builRequestWithUrlEncoding()
+	{
+		HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+		EasyMock.expect(request.getServletPath()).andReturn("/").anyTimes();
+		EasyMock.expect(request.getRequestURI()).andReturn("/test-proxy/OpenID%20Security%20Best%20Practices").anyTimes();
+		EasyMock.expect(request.getContextPath()).andReturn("/test-proxy").anyTimes();
+		EasyMock.expect(request.getQueryString()).andReturn(null).anyTimes();
+		EasyMock.expect(request.getServerName()).andReturn("localhost").anyTimes();
+		EasyMock.expect(request.getServerPort()).andReturn(8080).anyTimes();
+		EasyMock.replay(request);
+		return request;
+	}
+
+	/**
+	 * Test rewrite URI with encoded characters (RFC 1738)
+	 * @throws MalformedURLException
+	 * @throws URISyntaxException
+	 */
+	 
+	@Test
+	public void testRewriteUriWithEncoding() throws MalformedURLException, URISyntaxException
+	{
+		 HttpServletRequest request = builRequestWithUrlEncoding();
+		 URL redirectUrl = new URL("http://wiki.openid.net/w/page/12995200/");
+		 UrlRewriter rewriter = new UrlRewriterImpl(request, redirectUrl);
+		 URI requestUri = new
+		 URI("http://localhost:8080/test-proxy/OpenID%20Security%20Best%20Practices");
+		 URI expectedUri = new URI("http://wiki.openid.net/w/page/12995200/OpenID%20Security%20Best%20Practices");
+		 Assert.assertEquals(expectedUri, rewriter.rewriteUri(requestUri));
+		 EasyMock.verify(request);
+	}
 }

@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.protocol.RequestAddCookies;
 import org.apache.http.client.protocol.ResponseProcessCookies;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -45,7 +46,7 @@ public class ProxyServlet extends HttpServlet {
 
 	private static final int HTTP_DEFAULT_PORT = 80;
 	private URL targetServer;
-	private DefaultHttpClient client;
+	private HttpClient client;
 
 	public ProxyServlet() {
 		super();
@@ -67,39 +68,54 @@ public class ProxyServlet extends HttpServlet {
 
 	public void init( ProxyServletConfig config ) {
 		targetServer = config.getTargetUrl();
-        if (targetServer != null) {
-            SchemeRegistry schemeRegistry = new SchemeRegistry();
-            schemeRegistry.register(new Scheme(targetServer.getProtocol(), getPortOrDefault(targetServer.getPort()), PlainSocketFactory.getSocketFactory()));
-            BasicHttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout( httpParams, config.getConnectionTimeout() );
-            HttpConnectionParams.setSoTimeout( httpParams, config.getSocketTimeout() );
-            PoolingClientConnectionManager cm = new PoolingClientConnectionManager(schemeRegistry);
-            cm.setDefaultMaxPerRoute( config.getMaxConnections() );
-            cm.setMaxTotal( config.getMaxConnections() );
-            client = new DefaultHttpClient(cm, httpParams);
-            client.removeResponseInterceptorByClass(ResponseProcessCookies.class);
-            client.removeRequestInterceptorByClass(RequestAddCookies.class);
-            
-            final String remoteUserHeader = config.getRemoteUserHeader(); 
-            if (null != remoteUserHeader) {
-                client.addRequestInterceptor(new HttpRequestInterceptor() {
-                    
-                    @Override
-                    public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-                        request.removeHeaders(remoteUserHeader);
-                        HttpRequestHandler handler;
-                        if (context != null && (handler = (HttpRequestHandler) context.getAttribute(HttpRequestHandler.class.getName())) != null) {
-                            String remoteUser = handler.getRequest().getRemoteUser();
-                            if (remoteUser != null) {
-                                request.addHeader(remoteUserHeader, remoteUser);
-                            }
-                        }
-                    }
-                });
-            }
-        }
+        client = createClient(config);
 	}
-	
+
+	protected HttpClient createClient(ProxyServletConfig config)
+	{
+		if(targetServer == null) {
+			throw new IllegalArgumentException("ProxyServlet target server URL undefined");
+		}
+		
+		SchemeRegistry schemeRegistry = new SchemeRegistry();
+		schemeRegistry.register(new Scheme(targetServer.getProtocol(), getPortOrDefault(targetServer.getPort()), PlainSocketFactory
+				.getSocketFactory()));
+		BasicHttpParams httpParams = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, config.getConnectionTimeout());
+		HttpConnectionParams.setSoTimeout(httpParams, config.getSocketTimeout());
+		PoolingClientConnectionManager cm = new PoolingClientConnectionManager(schemeRegistry);
+		cm.setDefaultMaxPerRoute(config.getMaxConnections());
+		cm.setMaxTotal(config.getMaxConnections());
+		DefaultHttpClient httpClient = new DefaultHttpClient(cm, httpParams);
+		httpClient.removeResponseInterceptorByClass(ResponseProcessCookies.class);
+		httpClient.removeRequestInterceptorByClass(RequestAddCookies.class);
+
+		final String remoteUserHeader = config.getRemoteUserHeader();
+		if (null != remoteUserHeader)
+		{
+			httpClient.addRequestInterceptor(new HttpRequestInterceptor()
+			{
+
+				@Override
+				public void process(HttpRequest request, HttpContext context) throws HttpException, IOException
+				{
+					request.removeHeaders(remoteUserHeader);
+					HttpRequestHandler handler;
+					if (context != null && (handler = (HttpRequestHandler) context.getAttribute(HttpRequestHandler.class.getName())) != null)
+					{
+						String remoteUser = handler.getRequest().getRemoteUser();
+						if (remoteUser != null)
+						{
+							request.addHeader(remoteUserHeader, remoteUser);
+						}
+					}
+				}
+			});
+		}
+		
+		return httpClient;
+	}
+
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		new HttpGetRequestHandler(request, response, targetServer, client).execute();
