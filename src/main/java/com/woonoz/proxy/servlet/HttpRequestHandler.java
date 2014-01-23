@@ -105,9 +105,17 @@ public abstract class HttpRequestHandler {
 	}
 
 	private void handleException(HttpRequestBase httpCommand, Exception e) {
-		logger.error("Exception handling httpCommand: {}", (httpCommand != null ? httpCommand.getURI() : "(missing)"), e);
+		logger.error("Exception handling httpCommand: {}", (httpCommand != null ? httpCommand : "(missing)"), e);
 		if (httpCommand != null) {
 			httpCommand.abort();
+		}
+		
+		try
+		{
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} catch (IOException e1)
+		{
+			throw new RuntimeException("Error sending error 500 response after failed HTTP command", e1);
 		}
 	}
 	
