@@ -1,8 +1,6 @@
 package com.woonoz.proxy.servlet;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,9 +68,6 @@ public class HttpGetRequestHandlerTest {
 		
 		// response
 		HttpServletResponse response = EasyMock.createMock(HttpServletResponse.class);
-//		File temp = File.createTempFile(HttpGetRequestHandlerTest.class.getName(), null);
-//        temp.deleteOnExit();
-//        EasyMock.expect(response.getWriter()).andReturn(new PrintWriter(temp));
 		ServletOutputStream os = EasyMock.createMock(ServletOutputStream.class);
 		EasyMock.expect(response.getOutputStream()).andReturn(os);
 		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
