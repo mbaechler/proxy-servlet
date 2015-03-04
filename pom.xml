@@ -1,41 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-	  <groupId>org.sonatype.oss</groupId>
-	  <artifactId>oss-parent</artifactId>
-	  <version>7</version>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
 	</parent>
 
 	<groupId>com.googlecode.gwt-proxy-servlet</groupId>
 	<artifactId>proxy</artifactId>
 	<packaging>jar</packaging>
 	<name>proxy-servlet</name>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.4</version>
 	<description>Make your GWT client to access another domain's services</description>
 	<url>https://github.com/mbaechler/proxy-servlet</url>
 	<licenses>
-	  <license>
-	    <name>The Apache Software License, Version 2.0</name>
-	    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-	    <distribution>repo</distribution>
-	  </license>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
 	</licenses>
 	<scm>
-	  <connection>scm:git:git@github.com:mbaechler/proxy-servlet.git</connection>
-	  <developerConnection>scm:git:git@github.com:mbaechler/proxy-servlet.git</developerConnection>
-	  <url>https://github.com/mbaechler/proxy-servlet.git/</url>
+		<connection>scm:git:git@github.com:mbaechler/proxy-servlet.git</connection>
+		<developerConnection>scm:git:git@github.com:mbaechler/proxy-servlet.git</developerConnection>
+		<url>https://github.com/mbaechler/proxy-servlet.git/</url>
 	</scm>
 	<developers>
-	  <developer>
-	    <id>matthieu</id>
-	    <name>Matthieu Baechler</name>
-	    <email>matthieu.baechler@gmail.com</email>
-	  </developer>
+		<developer>
+			<id>matthieu</id>
+			<name>Matthieu Baechler</name>
+			<email>matthieu.baechler@gmail.com</email>
+		</developer>
 	</developers>
-
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.easymock</groupId>
@@ -70,22 +80,22 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.2.3</version>
 			<exclusions>
-        		<exclusion>
-          			<groupId>commons-logging</groupId>
-          			<artifactId>commons-logging</artifactId>
-        		</exclusion>
-        	</exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
 			<version>4.2.3</version>
 			<exclusions>
-        		<exclusion>
-          			<groupId>commons-logging</groupId>
-          			<artifactId>commons-logging</artifactId>
-        		</exclusion>
-        	</exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -168,13 +178,66 @@ org.eclipse.jdt.core.compiler.problem.fallthroughCase=warning
 org.eclipse.jdt.core.compiler.problem.unusedDeclaredThrownException=warning
 org.eclipse.jdt.core.compiler.problem.noEffectAssignment=error
 org.eclipse.jdt.core.codeComplete.staticFinalFieldPrefixes=]]>
-							</content>
+								</content>
 							</file>
 						</additionalConfig>
 					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 
 </project>
